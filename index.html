@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
-    <title>HP 12c Platinum Original</title>
+    <title>HP 12c Platinum Original - C.S.O.</title>
     <style>
         :root {
             --bg: #000; --case: #1e1e1e; --gold: #c5a059; --lcd-bg: #9ead94;
@@ -25,14 +25,24 @@
             box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 0 20px 50px rgba(0,0,0,1);
             position: relative; box-sizing: border-box;
         }
-        #theme-toggle { position: absolute; top: 12px; right: 120px; background: none; border: 1px solid var(--gold); color: var(--gold); border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer; }
+
+        /* ASSINATURA C.S.O. */
+        .signature {
+            position: absolute; top: 15px; left: 15px;
+            color: var(--gold); font-size: 14px; font-weight: bold;
+            font-style: italic; font-family: 'Times New Roman', serif;
+            letter-spacing: 2px; text-shadow: 1px 1px 0px rgba(0,0,0,0.5);
+        }
+
+        #theme-toggle { position: absolute; top: 12px; right: 12px; background: none; border: 1px solid var(--gold); color: var(--gold); border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer; }
+        
         .p-label, .f-label, .g-label { position: absolute; width: 100%; left: 0; text-align: center; pointer-events: none; line-height: 1; }
         .p-label { color: var(--btn-text); font-size: 7px; opacity: 0.6; }
         .f-label { color: var(--btn-orange); font-size: 8px; font-weight: bold; }
         .g-label { color: var(--btn-blue); font-size: 9px; font-weight: bold; }
         .top-far { top: -22px; } .top-near { top: -11px; } .bot-near { bottom: -11px; } .bot-far { bottom: -21px; }  
 
-        .lcd-frame { background: var(--metal); padding: 3px; border-radius: 3px; margin-bottom: 25px; border: 1px solid #000; }
+        .lcd-frame { background: var(--metal); padding: 3px; border-radius: 3px; margin-bottom: 25px; border: 1px solid #000; position: relative; }
         .lcd { background: var(--lcd-bg); height: 75px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 0 15px; font-family: 'Courier New', monospace; border: 3px solid #111; box-sizing: border-box; }
         #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; letter-spacing: 5px; }
         #main-display { font-size: 42px; color: var(--lcd-text); font-weight: bold; line-height: 1; }
@@ -43,18 +53,26 @@
         .btn-f { background: var(--btn-orange) !important; color: #000 !important; }
         .btn-g { background: var(--btn-blue) !important; color: #fff !important; }
         .btn-enter { grid-row: span 2; height: 110px; background: #444; color: white; }
+
+        @media (orientation: landscape) {
+            .hp12c { padding: 30px 10px 20px 10px; }
+            .lcd-frame { margin-bottom: 20px; }
+        }
     </style>
 </head>
 <body id="main-body">
 
 <div class="hp12c">
+    <div class="signature">C.S.O.</div>
     <button id="theme-toggle" onclick="toggleTheme()">L / D</button>
+    
     <div class="lcd-frame">
         <div class="lcd">
             <div id="status-bar"></div>
             <div id="main-display">0,00</div>
         </div>
     </div>
+    
     <div class="keypad">
         <button class="btn" onclick="handleTVM('n')"><span class="p-label top-far">Σy,x</span><span class="f-label top-near">AMORT</span>n<span class="g-label bot-far">12x</span></button>
         <button class="btn" onclick="handleTVM('i')"><span class="p-label top-far">y^r,x</span><span class="f-label top-near">INT</span>i<span class="g-label bot-far">12÷</span></button>
@@ -103,7 +121,7 @@
     
     let stack = [0, 0, 0, 0];
     let tvm = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
-    let cf = []; // Cash Flow
+    let cf = []; 
     let regs = new Array(10).fill(0);
     let prefix = null, displayValue = "0", isNewInput = true;
 
@@ -117,8 +135,16 @@
         osc.start(); osc.stop(audioCtx.currentTime + 0.05);
     }
 
-    function toggleTheme() { playClick(); body.classList.toggle('light-mode'); }
+    function toggleTheme() { 
+        playClick(); 
+        body.classList.toggle('light-mode'); 
+        localStorage.setItem('hp12-theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+    }
     
+    window.onload = () => {
+        if(localStorage.getItem('hp12-theme') === 'light') body.classList.add('light-mode');
+    };
+
     function updateLCD(val = stack[0]) {
         mainDisp.innerText = val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         statusDisp.innerText = prefix ? prefix.toLowerCase() : "";
@@ -143,8 +169,8 @@
         if (prefix === 'g') {
             if (key === 'n') tvm.n = stack[0] * 12;
             else if (key === 'i') tvm.i = stack[0] / 12;
-            else if (key === 'pv') cf = [stack[0]]; // CFo
-            else if (key === 'pmt') cf.push(stack[0]); // CFj
+            else if (key === 'pv') cf = [stack[0]]; 
+            else if (key === 'pmt') cf.push(stack[0]); 
             prefix = null;
         } else if (prefix === 'f') {
             if (key === 'pv') calculateNPV();
@@ -164,21 +190,16 @@
     }
 
     function calculateNPV() {
-        let i = tvm.i / 100;
-        let npv = cf[0];
-        for (let t = 1; t < cf.length; t++) {
-            npv += cf[t] / Math.pow(1 + i, t);
-        }
+        let i = tvm.i / 100; let npv = cf[0];
+        for (let t = 1; t < cf.length; t++) { npv += cf[t] / Math.pow(1 + i, t); }
         stack[0] = npv;
     }
 
     function handleSpecial(type) {
         playClick();
-        if (prefix === 'g' && type === '%') { // ΔDYS
+        if (prefix === 'g' && type === '%') {
             stack[0] = Math.floor(Math.abs(new Date() - new Date(stack[1])) / (1000*60*60*24));
-        } else {
-            execOp(type === '%' ? 'delta%' : 'sum');
-        }
+        } else { execOp(type === '%' ? 'delta%' : 'sum'); }
         prefix = null; updateLCD();
     }
 
@@ -191,7 +212,6 @@
         else if(op === '/') stack[0] = y / x;
         else if(op === 'pow') stack[0] = Math.pow(y, x);
         else if(op === 'delta%') stack[0] = ((x - y) / y) * 100;
-        
         stack[1]=stack[2]; stack[2]=stack[3];
         isNewInput = true; updateLCD();
     }
