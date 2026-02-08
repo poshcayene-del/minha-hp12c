@@ -22,13 +22,13 @@
         body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; }
         
         .hp12c {
-            background: var(--case); width: 95vw; max-width: 640px;
+            background: var(--case); width: 92vw; max-width: 600px;
             padding: 55px 15px 35px 15px; border-radius: 12px;
             box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 0 30px 80px rgba(0,0,0,1);
             border: 2px solid #000; position: relative;
+            box-sizing: border-box;
         }
 
-        /* LOGO HP E MODELO */
         .hp12c::before {
             content: "hp"; position: absolute; top: 15px; left: 25px; 
             color: white; font-size: 24px; font-weight: bold; font-style: italic; font-family: 'Times New Roman', serif;
@@ -38,7 +38,6 @@
             color: var(--gold); font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* LCD COM MOLDURA METÁLICA */
         .lcd-frame {
             background: var(--metal); padding: 5px; border-radius: 3px;
             margin-bottom: 55px; border: 1px solid #000;
@@ -46,7 +45,7 @@
         }
 
         .lcd {
-            background: var(--lcd-bg); height: 85px; 
+            background: var(--lcd-bg); height: 80px; 
             display: flex; flex-direction: column;
             align-items: flex-end; justify-content: center; padding: 0 15px;
             font-family: 'Courier New', monospace; border: 4px solid #111;
@@ -56,12 +55,13 @@
         #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; letter-spacing: 5px; }
         #main-display { font-size: 40px; color: #1a1d18; font-weight: bold; }
 
-        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 32px 8px; }
+        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 32px 6px; }
 
         .btn {
             height: 44px; border-radius: 4px; color: white;
             font-size: 11px; font-weight: bold; cursor: pointer; background: var(--btn-black);
             border: 1px solid #000; box-shadow: 0 3px 0 #000; position: relative;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
@@ -69,16 +69,22 @@
         .btn-g { background: var(--btn-blue); color: #fff; }
         .btn-enter { grid-row: span 2; height: 120px; background: #444; }
 
-        /* Rótulos */
         .f-label { color: var(--btn-orange); position: absolute; top: -19px; width: 100%; left: 0; font-size: 8px; text-align: center; font-weight: bold;}
-        .g-label { color: var(--btn-blue); position: absolute; bottom: -19px; width: 100%; left: 0; font-size: 8px; text-align: center; font-weight: bold;}
+        /* Aumentei um pouco as letras azuis aqui */
+        .g-label { color: var(--btn-blue); position: absolute; bottom: -20px; width: 100%; left: 0; font-size: 9px; text-align: center; font-weight: bold;}
         .p-label { color: #fff; position: absolute; top: -30px; width: 100%; left: 0; font-size: 7px; text-align: center; opacity: 0.8; font-weight: normal; }
 
         @media (orientation: landscape) {
-            .hp12c { max-width: 95vw; padding: 30px 15px 25px 15px; }
-            .lcd-frame { margin-bottom: 40px; }
-            .lcd { height: 60px; }
+            .hp12c { 
+                width: 88vw; /* Reduzi para não cortar as laterais */
+                max-width: 850px; 
+                padding: 30px 20px 25px 20px; 
+            }
+            .lcd-frame { margin-bottom: 42px; }
+            .lcd { height: 55px; }
             .keypad { gap: 26px 8px; }
+            .btn { height: 38px; }
+            .btn-enter { height: 102px; }
         }
     </style>
 </head>
@@ -133,7 +139,7 @@
 </div>
 
 <script>
-    /* O Script permanece robusto com as funções financeiras e o novo status de prefixo */
+    /* O Script permanece o mesmo das versões anteriores para manter a funcionalidade */
     const statusDisp = document.getElementById('status-bar');
     const mainDisp = document.getElementById('main-display');
     let stack = [0, 0, 0, 0], fin = { n:0, i:0, pv:0, pmt:0, fv:0 }, registers = new Array(20).fill(0);
