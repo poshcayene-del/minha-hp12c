@@ -142,8 +142,7 @@
     }
 
     function toggleTheme() { 
-        playClick(); 
-        body.classList.toggle('light-mode'); 
+        playClick(); body.classList.toggle('light-mode'); 
         localStorage.setItem('hp12-theme', body.classList.contains('light-mode') ? 'light' : 'dark');
     }
     
@@ -163,24 +162,16 @@
             prefix = null; isNewInput = true; updateLCD(); return;
         }
         if (isNewInput) { 
-            // Só empilha no início do dígito se não estivermos limpando o visor
-            if (displayValue !== "0") {
-                stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0];
-            }
-            displayValue = n.toString(); 
-            isNewInput = false; 
-        } else { 
-            displayValue += n.toString(); 
-        }
+            if (displayValue !== "0") { stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; }
+            displayValue = n.toString(); isNewInput = false; 
+        } else { displayValue += n.toString(); }
         stack[0] = parseFloat(displayValue);
         mainDisp.innerText = displayValue.replace('.', ',');
     }
 
     function pressEnter() { 
-        playClick(); 
-        stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; 
-        isNewInput = true; 
-        updateLCD(); 
+        playClick(); stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; 
+        isNewInput = true; updateLCD(); 
     }
 
     function handleTVM(key) {
@@ -194,11 +185,8 @@
         } else if (prefix === 'f') {
             if (key === 'pv') calculateNPV();
             prefix = null;
-        } else {
-            tvm[key] = stack[0];
-        }
-        isNewInput = true;
-        updateLCD();
+        } else { tvm[key] = stack[0]; }
+        isNewInput = true; updateLCD();
     }
 
     function calculateNPV() {
@@ -227,16 +215,17 @@
 
     function calculateDays(d1, d2) {
         const parseHP = (n) => {
-            const s = n.toFixed(6);
-            const d = parseInt(s.substring(0, s.indexOf('.')));
-            const rem = s.substring(s.indexOf('.') + 1);
-            const m = parseInt(rem.substring(0, 2)) - 1;
-            const y = parseInt(rem.substring(2, 6));
-            return new Date(y, m, d);
+            let s = n.toFixed(6);
+            let dotIdx = s.indexOf('.');
+            let dia = parseInt(s.substring(0, dotIdx));
+            let resto = s.substring(dotIdx + 1);
+            let mes = parseInt(resto.substring(0, 2)) - 1;
+            let ano = parseInt(resto.substring(2, 6));
+            return new Date(ano, mes, dia);
         };
         try {
-            const date1 = parseHP(d1); const date2 = parseHP(d2);
-            return Math.floor(Math.abs(date2 - date1) / (1000*60*60*24));
+            const dt1 = parseHP(d1); const dt2 = parseHP(d2);
+            return Math.floor(Math.abs(dt2 - dt1) / (1000 * 60 * 60 * 24));
         } catch(e) { return 0; }
     }
 
@@ -249,16 +238,14 @@
         else if(op === '/') stack[0] = x !== 0 ? y / x : 0;
         else if(op === 'pow') stack[0] = Math.pow(y, x);
         else if(op === 'delta%') stack[0] = ((x - y) / y) * 100;
-        
         stack[1]=stack[2]; stack[2]=stack[3];
         isNewInput = true; updateLCD();
     }
 
     function handleClear() {
         playClick();
-        if (prefix === 'f') { 
-            stack = [0,0,0,0]; tvm = {n:0,i:0,pv:0,pmt:0,fv:0}; cf = []; stats = []; prefix = null; 
-        } else { stack[0] = 0; displayValue = "0"; }
+        if (prefix === 'f') { stack = [0,0,0,0]; tvm = {n:0,i:0,pv:0,pmt:0,fv:0}; cf = []; stats = []; prefix = null; }
+        else { stack[0] = 0; displayValue = "0"; }
         isNewInput = true; updateLCD();
     }
 
@@ -266,7 +253,6 @@
     function pressDot() { playClick(); if(!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue.replace('.', ','); }
     function resetAll() { location.reload(); }
     function toggleFullScreen() { playClick(); if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
 </script>
 </body>
