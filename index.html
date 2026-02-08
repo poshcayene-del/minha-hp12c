@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
-    <title>HP 12c Platinum</title>
+    <title>HP 12c Platinum Pro</title>
     <style>
         :root {
             --bg: #000;
@@ -20,53 +20,52 @@
         body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; }
         
         .hp12c {
-            background: var(--case); width: 94vw; max-width: 600px;
-            padding: 40px 12px 30px 12px; border-radius: 10px;
+            background: var(--case); width: 96vw; max-width: 620px;
+            padding: 35px 12px 30px 12px; border-radius: 10px;
             box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 0 20px 50px rgba(0,0,0,1);
             position: relative; box-sizing: border-box;
         }
 
-        /* ETIQUETAS COM ESPAÇAMENTO REDUZIDO */
-        .p-label, .f-label, .g-label { position: absolute; width: 100%; left: 0; text-align: center; pointer-events: none; }
+        /* ETIQUETAS APROXIMADAS (DESIGN COMPACTO) */
+        .p-label, .f-label, .g-label { position: absolute; width: 100%; left: 0; text-align: center; pointer-events: none; line-height: 1; }
         .p-label { color: #fff; font-size: 7px; opacity: 0.8; }
         .f-label { color: var(--btn-orange); font-size: 8px; font-weight: bold; }
         .g-label { color: var(--btn-blue); font-size: 9px; font-weight: bold; }
         
-        /* ALINHAMENTO APROXIMADO */
-        .top-far { top: -24px; }   
-        .top-near { top: -13px; }  
-        .bot-near { bottom: -12px; } 
-        .bot-far { bottom: -23px; }  
+        /* Distâncias reduzidas para toque real */
+        .top-far { top: -22px; }   
+        .top-near { top: -11px; }  
+        .bot-near { bottom: -11px; } 
+        .bot-far { bottom: -21px; }  
 
-        .lcd-frame { background: var(--metal); padding: 3px; border-radius: 3px; margin-bottom: 30px; border: 1px solid #000; }
-        .lcd { background: var(--lcd-bg); height: 70px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 0 15px; font-family: 'Courier New', monospace; border: 3px solid #111; box-sizing: border-box; }
-        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; }
-        #main-display { font-size: 38px; color: #1a1d18; font-weight: bold; line-height: 1; }
+        .lcd-frame { background: var(--metal); padding: 3px; border-radius: 3px; margin-bottom: 25px; border: 1px solid #000; }
+        .lcd { background: var(--lcd-bg); height: 75px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 0 15px; font-family: 'Courier New', monospace; border: 3px solid #111; box-sizing: border-box; }
+        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; letter-spacing: 2px; }
+        #main-display { font-size: 42px; color: #1a1d18; font-weight: bold; line-height: 1; }
 
-        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 28px 6px; } 
+        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 26px 6px; } 
         
         .btn {
-            height: 40px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; 
+            height: 42px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; 
             background: var(--btn-black); border: 1px solid #000; box-shadow: 0 2px 0 #000; 
             position: relative; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; -webkit-tap-highlight-color: transparent;
+            cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none;
         }
-        .btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #000; }
+        .btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #000; background: #333; }
         .btn-f { background: var(--btn-orange); color: #000; }
         .btn-g { background: var(--btn-blue); color: #fff; }
-        .btn-enter { grid-row: span 2; height: 108px; background: #444; }
+        .btn-enter { grid-row: span 2; height: 110px; background: #444; }
 
-        /* AJUSTES PARA MODO HORIZONTAL (LANDSCAPE) */
         @media (orientation: landscape) {
-            .hp12c { padding: 12px 10px 18px 10px; max-width: 800px; width: 92vw; }
-            .lcd-frame { margin-bottom: 22px !important; }
-            .lcd { height: 42px !important; }
-            #main-display { font-size: 26px !important; }
-            .keypad { gap: 20px 5px !important; }
-            .btn { height: 28px !important; font-size: 10px !important; }
-            .btn-enter { height: 76px !important; }
-            .top-far { top: -19px; } .top-near { top: -10px; }
-            .bot-near { bottom: -10px; } .bot-far { bottom: -19px; }
+            .hp12c { padding: 10px 10px 20px 10px; max-width: 850px; width: 95vw; }
+            .lcd-frame { margin-bottom: 20px !important; }
+            .lcd { height: 45px !important; }
+            #main-display { font-size: 30px !important; }
+            .keypad { gap: 19px 5px !important; }
+            .btn { height: 30px !important; }
+            .btn-enter { height: 79px !important; }
+            .top-far { top: -18px; } .top-near { top: -9px; }
+            .bot-near { bottom: -9px; } .bot-far { bottom: -18px; }
         }
     </style>
 </head>
@@ -80,11 +79,11 @@
         </div>
     </div>
     <div class="keypad">
-        <button class="btn" onclick="pressFin('n')"><span class="p-label top-far">Σy,x</span><span class="f-label top-near">AMORT</span>n<span class="g-label bot-far">12x</span></button>
-        <button class="btn" onclick="pressFin('i')"><span class="p-label top-far">y^r,x</span><span class="f-label top-near">INT</span>i<span class="g-label bot-far">12÷</span></button>
-        <button class="btn" onclick="pressFin('pv')"><span class="p-label top-far">x1,x2</span><span class="f-label top-near">NPV</span>PV<span class="g-label bot-far">CFo</span></button>
-        <button class="btn" onclick="pressFin('pmt')"><span class="p-label top-far">w,x</span><span class="f-label top-near">IRR</span>PMT<span class="g-label bot-far">CFj</span></button>
-        <button class="btn" onclick="pressFin('fv')"><span class="p-label top-far">BEG</span>FV<span class="g-label bot-far">Nj</span></button>
+        <button class="btn" onclick="opFin('n')"><span class="p-label top-far">Σy,x</span><span class="f-label top-near">AMORT</span>n<span class="g-label bot-far">12x</span></button>
+        <button class="btn" onclick="opFin('i')"><span class="p-label top-far">y^r,x</span><span class="f-label top-near">INT</span>i<span class="g-label bot-far">12÷</span></button>
+        <button class="btn" onclick="opFin('pv')"><span class="p-label top-far">x1,x2</span><span class="f-label top-near">NPV</span>PV<span class="g-label bot-far">CFo</span></button>
+        <button class="btn" onclick="opFin('pmt')"><span class="p-label top-far">w,x</span><span class="f-label top-near">IRR</span>PMT<span class="g-label bot-far">CFj</span></button>
+        <button class="btn" onclick="opFin('fv')"><span class="p-label top-far">BEG</span>FV<span class="g-label bot-far">Nj</span></button>
         <button class="btn" onclick="toggleSign()"><span class="p-label top-far">END</span><span class="f-label top-near">DATE</span>CHS<span class="g-label bot-far">BEG</span></button>
         <button class="btn" onclick="pressNum(7)">7<span class="g-label bot-far">10^x</span></button>
         <button class="btn" onclick="pressNum(8)">8<span class="g-label bot-far">e^x</span></button>
@@ -94,8 +93,8 @@
         <button class="btn" onclick="execOp('pow')"><span class="p-label top-far">R/S</span>y<sup>x</sup><span class="g-label bot-far">√x</span></button>
         <button class="btn" onclick="execOp('1/x')"><span class="p-label top-far">SST</span>1/x<span class="g-label bot-far">LN</span></button>
         <button class="btn" onclick="execOp('%')"><span class="p-label top-far">R↓</span>%<span class="g-label bot-far">LOG</span></button>
-        <button class="btn"><span class="p-label top-far">x<>y</span>Δ%<span class="g-label bot-far">ΔDYS</span></button>
-        <button class="btn"><span class="p-label top-far">EEX</span>Σ+<span class="g-label bot-far">Σ-</span></button>
+        <button class="btn" onclick="execOp('deltaP')"><span class="p-label top-far">x<>y</span>Δ%<span class="g-label bot-far">ΔDYS</span></button>
+        <button class="btn" onclick="execOp('sum')"><span class="p-label top-far">EEX</span>Σ+<span class="g-label bot-far">Σ-</span></button>
         <button class="btn" onclick="clearCLX()"><span class="p-label top-far">P/R</span>CLX<span class="f-label bot-near">REG</span><span class="g-label bot-far">FIN</span></button>
         <button class="btn" onclick="pressNum(4)">4<span class="g-label bot-far">X≤Y</span></button>
         <button class="btn" onclick="pressNum(5)">5<span class="g-label bot-far">X=0</span></button>
@@ -104,8 +103,8 @@
 
         <button class="btn btn-f" onclick="setPrefix('f')">f</button>
         <button class="btn btn-g" onclick="setPrefix('g')">g</button>
-        <button class="btn">STO</button>
-        <button class="btn">RCL</button>
+        <button class="btn" onclick="setPrefix('sto')">STO</button>
+        <button class="btn" onclick="setPrefix('rcl')">RCL</button>
         <button class="btn btn-enter" onclick="pressEnter()">ENTER</button>
         <button class="btn" onclick="pressNum(1)">1<span class="g-label bot-far">x̄</span></button>
         <button class="btn" onclick="pressNum(2)">2<span class="g-label bot-far">s</span></button>
@@ -113,7 +112,7 @@
         <button class="btn" onclick="execOp('-')">-</button>
 
         <button class="btn" style="background: #600" onclick="resetAll()">RES</button>
-        <button class="btn" onclick="alert('PWA Ativo')">ON</button>
+        <button class="btn" onclick="toggleFullScreen()">ON</button>
         <button class="btn" style="grid-column: span 2;" onclick="pressNum(0)">0<span class="g-label bot-far">Σx</span></button>
         <button class="btn" onclick="pressDot()">.<span class="g-label bot-far">Σy</span></button>
         <button class="btn" onclick="execOp('+')">+</button>
@@ -130,6 +129,16 @@
         statusDisp.innerText = prefix ? prefix.toUpperCase() : "";
     }
 
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log(`Erro ao tentar entrar em tela cheia: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
     function pressNum(n) {
         if (isNewInput) { displayValue = n.toString(); isNewInput = false; }
         else { displayValue += n.toString(); }
@@ -137,9 +146,18 @@
         mainDisp.innerText = displayValue;
     }
 
-    function pressEnter() { stack[1] = stack[0]; isNewInput = true; updateLCD(); }
+    function pressEnter() { 
+        stack[3] = stack[2]; stack[2] = stack[1]; stack[1] = stack[0]; 
+        isNewInput = true; updateLCD(); 
+    }
+
     function setPrefix(p) { prefix = (prefix === p) ? null : p; updateLCD(); }
-    function clearCLX() { stack[0] = 0; displayValue = "0"; isNewInput = true; updateLCD(); }
+    
+    function clearCLX() { 
+        stack[0] = 0; displayValue = "0"; isNewInput = true; updateLCD(); 
+        if(prefix === 'f') { stack = [0,0,0,0]; prefix = null; updateLCD(); }
+    }
+
     function resetAll() { stack = [0,0,0,0]; prefix = null; isNewInput = true; updateLCD(); }
     function toggleSign() { stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
     function pressDot() { if(!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue; }
@@ -147,10 +165,22 @@
     function execOp(op) {
         let x = stack[0], y = stack[1];
         if(op === '+') stack[0] = y + x;
-        if(op === '-') stack[0] = y - x;
-        if(op === '*') stack[0] = y * x;
-        if(op === '/') stack[0] = y / x;
+        else if(op === '-') stack[0] = y - x;
+        else if(op === '*') stack[0] = y * x;
+        else if(op === '/') stack[0] = y / x;
+        else if(op === 'pow') stack[0] = Math.pow(y, x);
+        else if(op === '1/x') stack[0] = 1 / x;
+        else if(op === '%') stack[0] = (y * x) / 100;
+        
+        stack[1] = stack[2]; stack[2] = stack[3];
         isNewInput = true; updateLCD();
+    }
+
+    function opFin(key) {
+        // Logica financeira simplificada para feedback visual
+        isNewInput = true;
+        mainDisp.style.opacity = 0.5;
+        setTimeout(() => { mainDisp.style.opacity = 1; updateLCD(); }, 150);
     }
 </script>
 </body>
