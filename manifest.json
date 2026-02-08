@@ -1,14 +1,13 @@
 {
-  "name": "HP 12c Ultimate",
+  "name": "HP 12c Platinum",
   "short_name": "HP12c",
   "start_url": "index.html",
-  "display": "fullscreen",
-  "orientation": "any",
-  "background_color": "#121212",
-  "theme_color": "#121212",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#1e1e1e",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/234/234356.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/5024/5024479.png",
       "sizes": "512x512",
       "type": "image/png"
     }
