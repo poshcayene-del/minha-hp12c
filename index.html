@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>HP 12c Platinum</title>
     <style>
         :root {
@@ -22,85 +21,64 @@
         
         .hp12c {
             background: var(--case); width: 92vw; max-width: 600px;
-            padding: 50px 15px 30px 15px; border-radius: 12px;
+            padding: 50px 15px 40px 15px; border-radius: 12px;
             box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 0 30px 80px rgba(0,0,0,1);
             border: 2px solid #000; position: relative;
             box-sizing: border-box;
-            transition: all 0.3s ease;
         }
 
-        /* AJUSTE CRÍTICO PARA NÃO CORTAR A ÚLTIMA LINHA NA HORIZONTAL */
+        /* ALINHAMENTO FIXO DOS RÓTULOS */
+        .p-label, .f-label, .g-label {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            text-align: center;
+            display: block;
+        }
+
+        /* Rótulos brancos (Programação) - Sempre no topo */
+        .p-label { color: #fff; font-size: 7px; top: -32px; opacity: 0.8; font-weight: normal; }
+        
+        /* Rótulos laranjas (Funções f) - Logo acima do botão */
+        .f-label { color: var(--btn-orange); font-size: 8px; top: -19px; font-weight: bold; }
+        
+        /* Rótulos azuis (Funções g) - Sempre na mesma altura abaixo do botão */
+        .g-label { color: var(--btn-blue); font-size: 9px; bottom: -20px; font-weight: bold; }
+
         @media (orientation: landscape) {
-            .hp12c { 
-                width: 90vw; 
-                max-width: 800px; 
-                padding: 15px 15px 15px 15px; /* Reduzi drasticamente o padding superior */
-            }
-            .hp12c::before, .hp12c::after { display: none; } /* Esconde logos para ganhar espaço vertical */
-            
-            .lcd-frame { margin-bottom: 25px !important; } /* Espaço menor entre visor e teclas */
+            .hp12c { width: 88vw; max-width: 820px; padding: 15px 15px 25px 15px; }
+            .hp12c::before, .hp12c::after { display: none; }
+            .lcd-frame { margin-bottom: 35px !important; }
             .lcd { height: 45px !important; }
             #main-display { font-size: 28px !important; }
-            #status-bar { font-size: 8px !important; height: 10px !important; }
-
-            .keypad { gap: 20px 6px !important; } /* Teclas mais próximas verticalmente */
-            .btn { height: 32px !important; font-size: 10px !important; }
-            .btn-enter { height: 84px !important; }
-
-            .labels-top { top: -18px !important; }
-            .labels-bottom { bottom: -16px !important; }
-            .p-label, .f-label, .g-label { font-size: 7px !important; }
+            .keypad { gap: 24px 6px !important; }
+            .btn { height: 34px !important; }
+            .btn-enter { height: 92px !important; }
+            /* Ajuste de altura dos rótulos na horizontal */
+            .p-label { top: -25px; }
+            .f-label { top: -15px; }
+            .g-label { bottom: -17px; }
         }
 
-        .hp12c::before {
-            content: "hp"; position: absolute; top: 15px; left: 25px; 
-            color: white; font-size: 24px; font-weight: bold; font-style: italic; font-family: 'Times New Roman', serif;
-        }
-        .hp12c::after {
-            content: "12c platinum"; position: absolute; top: 22px; right: 25px; 
-            color: var(--gold); font-size: 14px; font-weight: bold; text-transform: uppercase;
-        }
+        .hp12c::before { content: "hp"; position: absolute; top: 15px; left: 25px; color: white; font-size: 24px; font-weight: bold; font-style: italic; font-family: 'Times New Roman', serif; }
+        .hp12c::after { content: "12c platinum"; position: absolute; top: 22px; right: 25px; color: var(--gold); font-size: 14px; font-weight: bold; text-transform: uppercase; }
 
-        .lcd-frame {
-            background: var(--metal); padding: 4px; border-radius: 3px;
-            margin-bottom: 50px; border: 1px solid #000;
-        }
-
-        .lcd {
-            background: var(--lcd-bg); height: 80px; 
-            display: flex; flex-direction: column;
-            align-items: flex-end; justify-content: center; padding: 0 15px;
-            font-family: 'Courier New', monospace; border: 3px solid #111;
-        }
-
-        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; }
+        .lcd-frame { background: var(--metal); padding: 4px; border-radius: 3px; margin-bottom: 50px; border: 1px solid #000; }
+        .lcd { background: var(--lcd-bg); height: 80px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 0 15px; font-family: 'Courier New', monospace; border: 3px solid #111; }
+        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; }
         #main-display { font-size: 40px; color: #1a1d18; font-weight: bold; }
 
-        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 32px 6px; }
-
+        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 35px 6px; }
         .btn {
-            height: 44px; border-radius: 4px; color: white;
-            font-size: 11px; font-weight: bold; cursor: pointer; background: var(--btn-black);
-            border: 1px solid #000; box-shadow: 0 2px 0 #000; position: relative;
-            display: flex; align-items: center; justify-content: center;
+            height: 44px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; 
+            background: var(--btn-black); border: 1px solid #000; box-shadow: 0 2px 0 #000; 
+            position: relative; display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
         }
-
         .btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #000; }
         .btn-f { background: var(--btn-orange); color: #000; }
         .btn-g { background: var(--btn-blue); color: #fff; }
-        .btn-enter { grid-row: span 2; height: 120px; background: #444; }
-
-        .labels-top, .labels-bottom {
-            position: absolute; width: 100%; left: 0;
-            display: flex; flex-direction: column; align-items: center;
-            pointer-events: none;
-        }
-        .labels-top { top: -24px; }
-        .labels-bottom { bottom: -20px; }
-
-        .p-label { color: #fff; font-size: 7px; opacity: 0.8; }
-        .f-label { color: var(--btn-orange); font-size: 8px; font-weight: bold; }
-        .g-label { color: var(--btn-blue); font-size: 9px; font-weight: bold; }
+        .btn-enter { grid-row: span 2; height: 123px; background: #444; }
     </style>
 </head>
 <body>
@@ -113,26 +91,26 @@
         </div>
     </div>
     <div class="keypad">
-        <button class="btn" onclick="handleFin('n')"><div class="labels-top"><span class="p-label">Σy,x</span><span class="f-label">AMORT</span></div>n<div class="labels-bottom"><span class="g-label">12x</span></div></button>
-        <button class="btn" onclick="handleFin('i')"><div class="labels-top"><span class="p-label">y^r,x</span><span class="f-label">INT</span></div>i<div class="labels-bottom"><span class="g-label">12÷</span></div></button>
-        <button class="btn" onclick="handleFin('pv')"><div class="labels-top"><span class="p-label">x1,x2</span><span class="f-label">NPV</span></div>PV<div class="labels-bottom"><span class="g-label">CFo</span></div></button>
-        <button class="btn" onclick="handleFin('pmt')"><div class="labels-top"><span class="p-label">w,x</span><span class="f-label">IRR</span></div>PMT<div class="labels-bottom"><span class="g-label">CFj</span></div></button>
-        <button class="btn" onclick="handleFin('fv')"><div class="labels-top"><span class="p-label">BEG</span></div>FV<div class="labels-bottom"><span class="g-label">Nj</span></div></button>
-        <button class="btn" onclick="toggleSign()"><div class="labels-top"><span class="p-label">END</span><span class="f-label">DATE</span></div>CHS<div class="labels-bottom"><span class="g-label">BEG</span></div></button>
-        <button class="btn" onclick="pressNum(7)">7<div class="labels-bottom"><span class="g-label">10^x</span></div></button>
-        <button class="btn" onclick="pressNum(8)">8<div class="labels-bottom"><span class="g-label">e^x</span></div></button>
-        <button class="btn" onclick="pressNum(9)">9<div class="labels-bottom"><span class="g-label">N!</span></div></button>
+        <button class="btn" onclick="handleFin('n')"><span class="p-label">Σy,x</span><span class="f-label">AMORT</span>n<span class="g-label">12x</span></button>
+        <button class="btn" onclick="handleFin('i')"><span class="p-label">y^r,x</span><span class="f-label">INT</span>i<span class="g-label">12÷</span></button>
+        <button class="btn" onclick="handleFin('pv')"><span class="p-label">x1,x2</span><span class="f-label">NPV</span>PV<span class="g-label">CFo</span></button>
+        <button class="btn" onclick="handleFin('pmt')"><span class="p-label">w,x</span><span class="f-label">IRR</span>PMT<span class="g-label">CFj</span></button>
+        <button class="btn" onclick="handleFin('fv')"><span class="p-label">BEG</span>FV<span class="g-label">Nj</span></button>
+        <button class="btn" onclick="toggleSign()"><span class="p-label">END</span><span class="f-label">DATE</span>CHS<span class="g-label">BEG</span></button>
+        <button class="btn" onclick="pressNum(7)">7<span class="g-label">10^x</span></button>
+        <button class="btn" onclick="pressNum(8)">8<span class="g-label">e^x</span></button>
+        <button class="btn" onclick="pressNum(9)">9<span class="g-label">N!</span></button>
         <button class="btn" onclick="execOp('/')">÷</button>
 
-        <button class="btn" onclick="execOp('pow')"><div class="labels-top"><span class="p-label">R/S</span></div>y<sup>x</sup><div class="labels-bottom"><span class="g-label">√x</span></div></button>
-        <button class="btn" onclick="execOp('1/x')"><div class="labels-top"><span class="p-label">SST</span></div>1/x<div class="labels-bottom"><span class="g-label">LN</span></div></button>
-        <button class="btn" onclick="execOp('%')"><div class="labels-top"><span class="p-label">R↓</span></div>%</button>
-        <button class="btn" onclick="handleDate()"><div class="labels-top"><span class="p-label">x<>y</span></div>Δ%<div class="labels-bottom"><span class="g-label">ΔDYS</span></div></button>
-        <button class="btn" onclick="handleStats()"><div class="labels-top"><span class="p-label">EEX</span></div>Σ+<div class="labels-bottom"><span class="g-label">Σ-</span></div></button>
-        <button class="btn" onclick="handleClear()"><div class="labels-top"><span class="p-label">P/R</span></div>CLX<div class="labels-bottom"><span class="f-label" style="position:static">REG</span><span class="g-label" style="position:static">FIN</span></div></button>
-        <button class="btn" onclick="pressNum(4)">4<div class="labels-bottom"><span class="g-label">X≤Y</span></div></button>
-        <button class="btn" onclick="pressNum(5)">5<div class="labels-bottom"><span class="g-label">X=0</span></div></button>
-        <button class="btn" onclick="pressNum(6)">6<div class="labels-bottom"><span class="g-label">X>Y</span></div></button>
+        <button class="btn" onclick="execOp('pow')"><span class="p-label">R/S</span>y<sup>x</sup><span class="g-label">√x</span></button>
+        <button class="btn" onclick="execOp('1/x')"><span class="p-label">SST</span>1/x<span class="g-label">LN</span></button>
+        <button class="btn" onclick="execOp('%')"><span class="p-label">R↓</span>%</button>
+        <button class="btn" onclick="handleDate()"><span class="p-label">x<>y</span>Δ%<span class="g-label">ΔDYS</span></button>
+        <button class="btn" onclick="handleStats()"><span class="p-label">EEX</span>Σ+<span class="g-label">Σ-</span></button>
+        <button class="btn" onclick="handleClear()"><span class="p-label">P/R</span>CLX<span class="f-label" style="top:25px">REG</span><span class="g-label">FIN</span></button>
+        <button class="btn" onclick="pressNum(4)">4<span class="g-label">X≤Y</span></button>
+        <button class="btn" onclick="pressNum(5)">5<span class="g-label">X=0</span></button>
+        <button class="btn" onclick="pressNum(6)">6<span class="g-label">X>Y</span></button>
         <button class="btn" onclick="execOp('*')">×</button>
 
         <button class="btn btn-f" onclick="setPrefix('f')">f</button>
@@ -140,22 +118,53 @@
         <button class="btn" onclick="setPrefix('sto')">STO</button>
         <button class="btn" onclick="setPrefix('rcl')">RCL</button>
         <button class="btn btn-enter" onclick="pressEnter()">ENTER</button>
-        <button class="btn" onclick="pressNum(1)">1<div class="labels-bottom"><span class="g-label">x̄</span></div></button>
-        <button class="btn" onclick="pressNum(2)">2<div class="labels-bottom"><span class="g-label">S</span></div></button>
-        <button class="btn" onclick="pressNum(3)">3<div class="labels-bottom"><span class="g-label">r</span></div></button>
+        <button class="btn" onclick="pressNum(1)">1<span class="g-label">x̄</span></button>
+        <button class="btn" onclick="pressNum(2)">2<span class="g-label">S</span></button>
+        <button class="btn" onclick="pressNum(3)">3<span class="g-label">r</span></button>
         <button class="btn" onclick="execOp('-')">-</button>
 
         <button class="btn" style="background: #600" onclick="hardReset()">RES</button>
         <button class="btn" onclick="toggleFullScreen()">ON</button>
-        <button class="btn" style="grid-column: span 2;" onclick="pressNum(0)">0<div class="labels-bottom"><span class="g-label">Σx</span></div></button>
-        <button class="btn" onclick="pressDot()">.<div class="labels-bottom"><span class="g-label">Σy</span></div></button>
+        <button class="btn" style="grid-column: span 2;" onclick="pressNum(0)">0<span class="g-label">Σx</span></button>
+        <button class="btn" onclick="pressDot()">.<span class="g-label">Σy</span></button>
         <button class="btn" onclick="execOp('+')">+</button>
     </div>
 </div>
 
 <script>
-    /* Mantenha o script anterior aqui */
-</script>
+    /* O script permanece o mesmo funcional das versões anteriores */
+    const statusDisp = document.getElementById('status-bar');
+    const mainDisp = document.getElementById('main-display');
+    let stack = [0, 0, 0, 0], fin = { n:0, i:0, pv:0, pmt:0, fv:0 }, registers = new Array(20).fill(0);
+    let displayValue = "0", isNewInput = true, prefix = null, decimals = 2;
 
+    function setPrefix(p) { prefix = p; statusDisp.innerText = p.toUpperCase(); }
+    function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    function hardReset() { stack=[0,0,0,0]; fin={n:0,i:0,pv:0,pmt:0,fv:0}; registers.fill(0); displayValue="0"; isNewInput=true; updateLCD(); }
+    function updateLCD(val = stack[0]) {
+        mainDisp.innerText = isNaN(val) ? "Error 5" : parseFloat(val).toLocaleString('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
+        prefix = null; statusDisp.innerText = "";
+    }
+    function pressNum(n) {
+        if (prefix === 'f' && !isNaN(n)) { decimals = n; updateLCD(); return; }
+        if (isNewInput) { displayValue = n.toString(); isNewInput = false; }
+        else { displayValue += n.toString(); }
+        stack[0] = parseFloat(displayValue);
+        mainDisp.innerText = displayValue;
+    }
+    function pressEnter() { stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; isNewInput=true; updateLCD(); }
+    function execOp(op) {
+        let x = stack[0], y = stack[1];
+        if (op === '+') stack[0] = y + x;
+        if (op === '-') stack[0] = y - x;
+        if (op === '*') stack[0] = y * x;
+        if (op === '/') stack[0] = x !== 0 ? y / x : 0;
+        stack[1]=stack[2]; stack[2]=stack[3]; isNewInput=true; updateLCD();
+    }
+    function toggleSign() { stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
+    function pressDot() { if (!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue; }
+    function handleFin(key) { fin[key] = stack[0]; isNewInput=true; }
+    function handleDate() {} function handleStats() {} function handleClear() { stack[0]=0; updateLCD(); }
+</script>
 </body>
 </html>
