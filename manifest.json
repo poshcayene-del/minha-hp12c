@@ -7,12 +7,5 @@
   "background_color": "#000000",
   "theme_color": "#c5a059",
   "orientation": "any",
-  "icons": [
-    {
-      "src": "gerar_icone.html",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "icons": []
 }
-
