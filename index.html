@@ -92,7 +92,7 @@
         <button class="btn" onclick="execOp('pow')"><span class="p-label top-far">R/S</span>y<sup>x</sup><span class="g-label bot-far">√x</span></button>
         <button class="btn" onclick="execOp('1/x')"><span class="p-label top-far">SST</span>1/x<span class="g-label bot-far">LN</span></button>
         <button class="btn" onclick="execOp('%')"><span class="p-label top-far">R↓</span>%<span class="g-label bot-far">LOG</span></button>
-        <button class="btn" onclick="handleSpecial('%')"><span class="p-label top-far">x<>y</span>Δ%<span class="g-label bot-far">ΔDYS</span></button>
+        <button class="btn" onclick="handleDeltaButton()"><span class="p-label top-far">x<>y</span>Δ%<span class="g-label bot-far">ΔDYS</span></button>
         <button class="btn" onclick="handleSpecial('sum')"><span class="p-label top-far">EEX</span>Σ+<span class="g-label bot-far">Σ-</span></button>
         <button class="btn" onclick="handleClear()"><span class="p-label top-far">P/R</span>CLX<span class="f-label bot-near">REG</span><span class="g-label bot-far">FIN</span></button>
         <button class="btn" onclick="pressNum(4)">4<span class="g-label bot-far">X≤Y</span></button>
@@ -174,6 +174,8 @@
         isNewInput = true; updateLCD(); 
     }
 
+    function setPrefix(p) { playClick(); prefix = (prefix === p) ? null : p; updateLCD(); }
+
     function handleTVM(key) {
         playClick();
         if (prefix === 'g') {
@@ -200,22 +202,34 @@
         isNewInput = true; updateLCD();
     }
 
+    // FUNÇÃO PARA BOTÃO Δ% / ΔDYS
+    function handleDeltaButton() {
+        playClick();
+        if (prefix === 'g') {
+            // CALENDÁRIO: Captura Y e X antes de qualquer outra lógica
+            stack[0] = calculateDays(stack[1], stack[0]);
+            prefix = null;
+        } else {
+            // VARIAÇÃO %
+            execOp('delta%');
+        }
+        isNewInput = true;
+        updateLCD();
+    }
+
     function handleSpecial(type) {
         playClick();
         if (type === 'sum') {
             if (prefix === 'g') stats.pop();
             else { stats.push(stack[0]); stack[0] = stats.length; }
-        } else if (type === '%') {
-            if (prefix === 'g') {
-                stack[0] = calculateDays(stack[1], stack[0]);
-            } else { execOp('delta%'); return; }
         }
         prefix = null; isNewInput = true; updateLCD();
     }
 
     function calculateDays(d1, d2) {
         const parseHP = (n) => {
-            let s = n.toFixed(6);
+            // Converte 08.022026 em string garantindo as casas decimais
+            let s = n.toFixed(6).toString();
             let dotIdx = s.indexOf('.');
             let dia = parseInt(s.substring(0, dotIdx));
             let resto = s.substring(dotIdx + 1);
@@ -225,7 +239,8 @@
         };
         try {
             const dt1 = parseHP(d1); const dt2 = parseHP(d2);
-            return Math.floor(Math.abs(dt2 - dt1) / (1000 * 60 * 60 * 24));
+            const diffTime = Math.abs(dt2 - dt1);
+            return Math.round(diffTime / (1000 * 60 * 60 * 24));
         } catch(e) { return 0; }
     }
 
@@ -238,14 +253,16 @@
         else if(op === '/') stack[0] = x !== 0 ? y / x : 0;
         else if(op === 'pow') stack[0] = Math.pow(y, x);
         else if(op === 'delta%') stack[0] = ((x - y) / y) * 100;
+        
         stack[1]=stack[2]; stack[2]=stack[3];
         isNewInput = true; updateLCD();
     }
 
     function handleClear() {
         playClick();
-        if (prefix === 'f') { stack = [0,0,0,0]; tvm = {n:0,i:0,pv:0,pmt:0,fv:0}; cf = []; stats = []; prefix = null; }
-        else { stack[0] = 0; displayValue = "0"; }
+        if (prefix === 'f') { 
+            stack = [0,0,0,0]; tvm = {n:0,i:0,pv:0,pmt:0,fv:0}; cf = []; stats = []; prefix = null; 
+        } else { stack[0] = 0; displayValue = "0"; }
         isNewInput = true; updateLCD();
     }
 
@@ -253,6 +270,7 @@
     function pressDot() { playClick(); if(!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue.replace('.', ','); }
     function resetAll() { location.reload(); }
     function toggleFullScreen() { playClick(); if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
 </script>
 </body>
