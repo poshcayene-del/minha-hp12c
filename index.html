@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>HP 12c Professional</title>
     <link rel="manifest" href="manifest.json">
     <style>
@@ -32,9 +34,9 @@
 
         .lcd {
             position: relative; z-index: 1; background: var(--lcd-bg); 
-            height: 85px; /* VOLTOU AO TAMANHO MAIOR */
+            height: 85px; 
             border-radius: 4px; 
-            margin-bottom: 55px; /* ESPAÇO AMPLO PARA OS RÓTULOS */
+            margin-bottom: 55px; 
             display: flex; flex-direction: column;
             align-items: flex-end; justify-content: center; padding: 0 15px;
             font-family: 'Courier New', monospace; border: 6px solid #111;
@@ -47,15 +49,14 @@
         .keypad { 
             display: grid; 
             grid-template-columns: repeat(10, 1fr); 
-            gap: 28px 8px; /* ESPAÇAMENTO VERTICAL REFORÇADO */
+            gap: 28px 8px; 
             position: relative; 
             z-index: 1;
             padding-top: 5px;
         }
 
         .btn {
-            height: 46px; /* VOLTOU À ALTURA ROBUSTA */
-            border: 1px solid #000; border-radius: 4px; color: white;
+            height: 46px; border: 1px solid #000; border-radius: 4px; color: white;
             font-size: 11px; font-weight: bold; cursor: pointer; background: var(--btn-black);
             box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 3px 0 #000; 
             position: relative;
@@ -119,7 +120,7 @@
         <button class="btn" onclick="pressNum(3)">3</button>
         <button class="btn" onclick="execOp('-')">-</button>
 
-        <button class="btn">ON</button>
+        <button class="btn" onclick="toggleFullScreen()">ON</button>
         <button class="btn" style="grid-column: span 2;" onclick="pressNum(0)">0</button>
         <button class="btn" onclick="pressDot()">.</button>
         <button class="btn" onclick="execOp('+')">+</button>
@@ -127,6 +128,17 @@
 </div>
 
 <script>
+    /* NOVA FUNÇÃO: TELA CHEIA */
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log(`Erro ao tentar modo tela cheia: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
     let stack = [0, 0, 0, 0];
     let fin = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
     let registers = new Array(20).fill(0);
