@@ -4,86 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
-    <title>HP 12c Platinum Pro</title>
+    <title>HP 12c Platinum Original</title>
     <style>
         :root {
-            --bg: #000;
-            --case: #1e1e1e;
-            --gold: #c5a059;
-            --lcd-bg: #9ead94;
+            --bg: #000; --case: #1e1e1e; --gold: #c5a059; --lcd-bg: #9ead94;
+            --lcd-text: #1a1d18; --btn-orange: #ff8c00; --btn-blue: #00bfff;
             --btn-black: linear-gradient(180deg, #3a3a3a 0%, #111 100%);
-            --btn-orange: #ff8c00;
-            --btn-blue: #00bfff;
             --metal: linear-gradient(180deg, #555 0%, #aaa 45%, #888 55%, #444 100%);
+            --btn-text: #fff;
         }
-
+        body.light-mode {
+            --bg: #d1d1d1; --case: #d8d8d8; --lcd-bg: #b8c4af;
+            --btn-black: linear-gradient(180deg, #f0f0f0 0%, #bbb 100%); --btn-text: #222;
+        }
         body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; }
         
         .hp12c {
             background: var(--case); width: 96vw; max-width: 620px;
-            padding: 35px 12px 30px 12px; border-radius: 10px;
+            padding: 45px 12px 30px 12px; border-radius: 10px;
             box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 0 20px 50px rgba(0,0,0,1);
             position: relative; box-sizing: border-box;
         }
-
-        /* ETIQUETAS APROXIMADAS (DESIGN COMPACTO) */
+        #theme-toggle { position: absolute; top: 12px; right: 120px; background: none; border: 1px solid var(--gold); color: var(--gold); border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer; }
         .p-label, .f-label, .g-label { position: absolute; width: 100%; left: 0; text-align: center; pointer-events: none; line-height: 1; }
-        .p-label { color: #fff; font-size: 7px; opacity: 0.8; }
+        .p-label { color: var(--btn-text); font-size: 7px; opacity: 0.6; }
         .f-label { color: var(--btn-orange); font-size: 8px; font-weight: bold; }
         .g-label { color: var(--btn-blue); font-size: 9px; font-weight: bold; }
-        
-        /* Distâncias reduzidas para toque real */
-        .top-far { top: -22px; }   
-        .top-near { top: -11px; }  
-        .bot-near { bottom: -11px; } 
-        .bot-far { bottom: -21px; }  
+        .top-far { top: -22px; } .top-near { top: -11px; } .bot-near { bottom: -11px; } .bot-far { bottom: -21px; }  
 
         .lcd-frame { background: var(--metal); padding: 3px; border-radius: 3px; margin-bottom: 25px; border: 1px solid #000; }
         .lcd { background: var(--lcd-bg); height: 75px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 0 15px; font-family: 'Courier New', monospace; border: 3px solid #111; box-sizing: border-box; }
-        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; letter-spacing: 2px; }
-        #main-display { font-size: 42px; color: #1a1d18; font-weight: bold; line-height: 1; }
+        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; letter-spacing: 5px; }
+        #main-display { font-size: 42px; color: var(--lcd-text); font-weight: bold; line-height: 1; }
 
         .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 26px 6px; } 
-        
-        .btn {
-            height: 42px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; 
-            background: var(--btn-black); border: 1px solid #000; box-shadow: 0 2px 0 #000; 
-            position: relative; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none;
-        }
-        .btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #000; background: #333; }
-        .btn-f { background: var(--btn-orange); color: #000; }
-        .btn-g { background: var(--btn-blue); color: #fff; }
-        .btn-enter { grid-row: span 2; height: 110px; background: #444; }
-
-        @media (orientation: landscape) {
-            .hp12c { padding: 10px 10px 20px 10px; max-width: 850px; width: 95vw; }
-            .lcd-frame { margin-bottom: 20px !important; }
-            .lcd { height: 45px !important; }
-            #main-display { font-size: 30px !important; }
-            .keypad { gap: 19px 5px !important; }
-            .btn { height: 30px !important; }
-            .btn-enter { height: 79px !important; }
-            .top-far { top: -18px; } .top-near { top: -9px; }
-            .bot-near { bottom: -9px; } .bot-far { bottom: -18px; }
-        }
+        .btn { height: 42px; border-radius: 4px; color: var(--btn-text); font-size: 11px; font-weight: bold; background: var(--btn-black); border: 1px solid #999; box-shadow: 0 2px 0 #000; position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; }
+        .btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #000; opacity: 0.8; }
+        .btn-f { background: var(--btn-orange) !important; color: #000 !important; }
+        .btn-g { background: var(--btn-blue) !important; color: #fff !important; }
+        .btn-enter { grid-row: span 2; height: 110px; background: #444; color: white; }
     </style>
 </head>
-<body>
+<body id="main-body">
 
 <div class="hp12c">
+    <button id="theme-toggle" onclick="toggleTheme()">L / D</button>
     <div class="lcd-frame">
         <div class="lcd">
             <div id="status-bar"></div>
-            <div id="main-display">0.00</div>
+            <div id="main-display">0,00</div>
         </div>
     </div>
     <div class="keypad">
-        <button class="btn" onclick="opFin('n')"><span class="p-label top-far">Σy,x</span><span class="f-label top-near">AMORT</span>n<span class="g-label bot-far">12x</span></button>
-        <button class="btn" onclick="opFin('i')"><span class="p-label top-far">y^r,x</span><span class="f-label top-near">INT</span>i<span class="g-label bot-far">12÷</span></button>
-        <button class="btn" onclick="opFin('pv')"><span class="p-label top-far">x1,x2</span><span class="f-label top-near">NPV</span>PV<span class="g-label bot-far">CFo</span></button>
-        <button class="btn" onclick="opFin('pmt')"><span class="p-label top-far">w,x</span><span class="f-label top-near">IRR</span>PMT<span class="g-label bot-far">CFj</span></button>
-        <button class="btn" onclick="opFin('fv')"><span class="p-label top-far">BEG</span>FV<span class="g-label bot-far">Nj</span></button>
+        <button class="btn" onclick="handleTVM('n')"><span class="p-label top-far">Σy,x</span><span class="f-label top-near">AMORT</span>n<span class="g-label bot-far">12x</span></button>
+        <button class="btn" onclick="handleTVM('i')"><span class="p-label top-far">y^r,x</span><span class="f-label top-near">INT</span>i<span class="g-label bot-far">12÷</span></button>
+        <button class="btn" onclick="handleTVM('pv')"><span class="p-label top-far">x1,x2</span><span class="f-label top-near">NPV</span>PV<span class="g-label bot-far">CFo</span></button>
+        <button class="btn" onclick="handleTVM('pmt')"><span class="p-label top-far">w,x</span><span class="f-label top-near">IRR</span>PMT<span class="g-label bot-far">CFj</span></button>
+        <button class="btn" onclick="handleTVM('fv')"><span class="p-label top-far">BEG</span>FV<span class="g-label bot-far">Nj</span></button>
         <button class="btn" onclick="toggleSign()"><span class="p-label top-far">END</span><span class="f-label top-near">DATE</span>CHS<span class="g-label bot-far">BEG</span></button>
         <button class="btn" onclick="pressNum(7)">7<span class="g-label bot-far">10^x</span></button>
         <button class="btn" onclick="pressNum(8)">8<span class="g-label bot-far">e^x</span></button>
@@ -93,9 +70,9 @@
         <button class="btn" onclick="execOp('pow')"><span class="p-label top-far">R/S</span>y<sup>x</sup><span class="g-label bot-far">√x</span></button>
         <button class="btn" onclick="execOp('1/x')"><span class="p-label top-far">SST</span>1/x<span class="g-label bot-far">LN</span></button>
         <button class="btn" onclick="execOp('%')"><span class="p-label top-far">R↓</span>%<span class="g-label bot-far">LOG</span></button>
-        <button class="btn" onclick="execOp('deltaP')"><span class="p-label top-far">x<>y</span>Δ%<span class="g-label bot-far">ΔDYS</span></button>
-        <button class="btn" onclick="execOp('sum')"><span class="p-label top-far">EEX</span>Σ+<span class="g-label bot-far">Σ-</span></button>
-        <button class="btn" onclick="clearCLX()"><span class="p-label top-far">P/R</span>CLX<span class="f-label bot-near">REG</span><span class="g-label bot-far">FIN</span></button>
+        <button class="btn" onclick="handleSpecial('%')"><span class="p-label top-far">x<>y</span>Δ%<span class="g-label bot-far">ΔDYS</span></button>
+        <button class="btn" onclick="handleSpecial('sum')"><span class="p-label top-far">EEX</span>Σ+<span class="g-label bot-far">Σ-</span></button>
+        <button class="btn" onclick="handleClear()"><span class="p-label top-far">P/R</span>CLX<span class="f-label bot-near">REG</span><span class="g-label bot-far">FIN</span></button>
         <button class="btn" onclick="pressNum(4)">4<span class="g-label bot-far">X≤Y</span></button>
         <button class="btn" onclick="pressNum(5)">5<span class="g-label bot-far">X=0</span></button>
         <button class="btn" onclick="pressNum(6)">6<span class="g-label bot-far">X>Y</span></button>
@@ -111,7 +88,7 @@
         <button class="btn" onclick="pressNum(3)">3<span class="g-label bot-far">r</span></button>
         <button class="btn" onclick="execOp('-')">-</button>
 
-        <button class="btn" style="background: #600" onclick="resetAll()">RES</button>
+        <button class="btn" style="background: #600; color: white;" onclick="resetAll()">RES</button>
         <button class="btn" onclick="toggleFullScreen()">ON</button>
         <button class="btn" style="grid-column: span 2;" onclick="pressNum(0)">0<span class="g-label bot-far">Σx</span></button>
         <button class="btn" onclick="pressDot()">.<span class="g-label bot-far">Σy</span></button>
@@ -122,66 +99,116 @@
 <script>
     const mainDisp = document.getElementById('main-display');
     const statusDisp = document.getElementById('status-bar');
-    let stack = [0, 0, 0, 0], prefix = null, displayValue = "0", isNewInput = true;
+    const body = document.getElementById('main-body');
+    
+    let stack = [0, 0, 0, 0];
+    let tvm = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
+    let cf = []; // Cash Flow
+    let regs = new Array(10).fill(0);
+    let prefix = null, displayValue = "0", isNewInput = true;
 
-    function updateLCD() {
-        mainDisp.innerText = parseFloat(stack[0]).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        statusDisp.innerText = prefix ? prefix.toUpperCase() : "";
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playClick() {
+        const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.05);
     }
 
-    function toggleFullScreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.log(`Erro ao tentar entrar em tela cheia: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
+    function toggleTheme() { playClick(); body.classList.toggle('light-mode'); }
+    
+    function updateLCD(val = stack[0]) {
+        mainDisp.innerText = val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        statusDisp.innerText = prefix ? prefix.toLowerCase() : "";
     }
 
     function pressNum(n) {
+        playClick();
+        if (prefix === 'sto') { regs[n] = stack[0]; prefix = null; updateLCD(); return; }
+        if (prefix === 'rcl') { stack[0] = regs[n]; prefix = null; updateLCD(); return; }
+        
         if (isNewInput) { displayValue = n.toString(); isNewInput = false; }
         else { displayValue += n.toString(); }
         stack[0] = parseFloat(displayValue);
-        mainDisp.innerText = displayValue;
+        mainDisp.innerText = displayValue.replace('.', ',');
     }
 
-    function pressEnter() { 
-        stack[3] = stack[2]; stack[2] = stack[1]; stack[1] = stack[0]; 
-        isNewInput = true; updateLCD(); 
+    function pressEnter() { playClick(); stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; isNewInput=true; updateLCD(); }
+    function setPrefix(p) { playClick(); prefix = (prefix === p) ? null : p; updateLCD(); }
+
+    function handleTVM(key) {
+        playClick();
+        if (prefix === 'g') {
+            if (key === 'n') tvm.n = stack[0] * 12;
+            else if (key === 'i') tvm.i = stack[0] / 12;
+            else if (key === 'pv') cf = [stack[0]]; // CFo
+            else if (key === 'pmt') cf.push(stack[0]); // CFj
+            prefix = null;
+        } else if (prefix === 'f') {
+            if (key === 'pv') calculateNPV();
+            prefix = null;
+        } else if (isNewInput) { calculateTVM(key); } 
+        else { tvm[key] = stack[0]; isNewInput = true; }
+        updateLCD();
     }
 
-    function setPrefix(p) { prefix = (prefix === p) ? null : p; updateLCD(); }
-    
-    function clearCLX() { 
-        stack[0] = 0; displayValue = "0"; isNewInput = true; updateLCD(); 
-        if(prefix === 'f') { stack = [0,0,0,0]; prefix = null; updateLCD(); }
+    function calculateTVM(key) {
+        let n = tvm.n, i = tvm.i / 100, pv = tvm.pv, pmt = tvm.pmt, fv = tvm.fv;
+        if (key === 'pv') stack[0] = -(pmt * (1 - Math.pow(1 + i, -n)) / i + fv / Math.pow(1 + i, n));
+        else if (key === 'fv') stack[0] = -(pv * Math.pow(1 + i, n) + pmt * (Math.pow(1 + i, n) - 1) / i);
+        else if (key === 'pmt') stack[0] = -(pv * i * Math.pow(1 + i, n) + fv * i) / (Math.pow(1 + i, n) - 1);
+        else if (key === 'n') stack[0] = Math.log((pmt - fv * i) / (pmt + pv * i)) / Math.log(1 + i);
+        tvm[key] = stack[0];
     }
 
-    function resetAll() { stack = [0,0,0,0]; prefix = null; isNewInput = true; updateLCD(); }
-    function toggleSign() { stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
-    function pressDot() { if(!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue; }
+    function calculateNPV() {
+        let i = tvm.i / 100;
+        let npv = cf[0];
+        for (let t = 1; t < cf.length; t++) {
+            npv += cf[t] / Math.pow(1 + i, t);
+        }
+        stack[0] = npv;
+    }
+
+    function handleSpecial(type) {
+        playClick();
+        if (prefix === 'g' && type === '%') { // ΔDYS
+            stack[0] = Math.floor(Math.abs(new Date() - new Date(stack[1])) / (1000*60*60*24));
+        } else {
+            execOp(type === '%' ? 'delta%' : 'sum');
+        }
+        prefix = null; updateLCD();
+    }
 
     function execOp(op) {
+        playClick();
         let x = stack[0], y = stack[1];
         if(op === '+') stack[0] = y + x;
         else if(op === '-') stack[0] = y - x;
         else if(op === '*') stack[0] = y * x;
         else if(op === '/') stack[0] = y / x;
         else if(op === 'pow') stack[0] = Math.pow(y, x);
-        else if(op === '1/x') stack[0] = 1 / x;
-        else if(op === '%') stack[0] = (y * x) / 100;
+        else if(op === 'delta%') stack[0] = ((x - y) / y) * 100;
         
-        stack[1] = stack[2]; stack[2] = stack[3];
+        stack[1]=stack[2]; stack[2]=stack[3];
         isNewInput = true; updateLCD();
     }
 
-    function opFin(key) {
-        // Logica financeira simplificada para feedback visual
-        isNewInput = true;
-        mainDisp.style.opacity = 0.5;
-        setTimeout(() => { mainDisp.style.opacity = 1; updateLCD(); }, 150);
+    function handleClear() {
+        playClick();
+        if (prefix === 'f') { stack = [0,0,0,0]; tvm = {n:0,i:0,pv:0,pmt:0,fv:0}; cf = []; prefix = null; } 
+        else { stack[0] = 0; displayValue = "0"; }
+        isNewInput = true; updateLCD();
     }
+
+    function toggleSign() { playClick(); stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
+    function pressDot() { playClick(); if(!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue.replace('.', ','); }
+    function resetAll() { location.reload(); }
+    function toggleFullScreen() { playClick(); document.documentElement.requestFullscreen(); }
+
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
 </script>
 </body>
 </html>
