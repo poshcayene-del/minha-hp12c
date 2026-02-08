@@ -158,7 +158,6 @@
         if (prefix === 'sto') { regs[n] = stack[0]; prefix = null; updateLCD(); return; }
         if (prefix === 'rcl') { stack[0] = regs[n]; prefix = null; updateLCD(); return; }
         
-        // CORREÇÃO ESTATÍSTICA (g + 1 para média)
         if (prefix === 'g' && n === 1) {
             stack[0] = stats.length > 0 ? stats.reduce((a,b) => a+b, 0) / stats.length : 0;
             prefix = null; isNewInput = true; updateLCD(); return;
@@ -211,7 +210,12 @@
             stack[0] = calculateDays(stack[1], stack[0]);
             prefix = null;
         } else {
-            execOp('delta%');
+            // Δ% na HP: ((Novo - Antigo) / Antigo) * 100
+            // X é o Novo, Y é o Antigo
+            let novo = stack[0];
+            let antigo = stack[1];
+            stack[0] = ((novo - antigo) / antigo) * 100;
+            stack[1] = stack[2]; stack[2] = stack[3]; // Sobe a pilha
         }
         isNewInput = true; updateLCD();
     }
@@ -245,15 +249,14 @@
     function execOp(op) {
         playClick();
         let x = stack[0], y = stack[1];
+        
         if(op === '+') stack[0] = y + x;
         else if(op === '-') stack[0] = y - x;
         else if(op === '*') stack[0] = y * x;
         else if(op === '/') stack[0] = x !== 0 ? y / x : 0;
-        else if(op === 'pow') stack[0] = Math.pow(y, x);
+        else if(op === 'pow') stack[0] = Math.pow(y, x); // Y é a base, X é o expoente
         else if(op === '1/x') stack[0] = x !== 0 ? 1 / x : 0;
-        else if(op === 'delta%') stack[0] = ((x - y) / y) * 100;
         
-        // Se for operação de uma variável (1/x), não mexe no resto da pilha
         if (op !== '1/x') {
             stack[1]=stack[2]; stack[2]=stack[3];
         }
