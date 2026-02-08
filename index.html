@@ -26,7 +26,6 @@
             position: relative; box-sizing: border-box;
         }
 
-        /* ASSINATURA C.S.O. */
         .signature {
             position: absolute; top: 15px; left: 15px;
             color: var(--gold); font-size: 14px; font-weight: bold;
@@ -54,9 +53,17 @@
         .btn-g { background: var(--btn-blue) !important; color: #fff !important; }
         .btn-enter { grid-row: span 2; height: 110px; background: #444; color: white; }
 
+        /* AJUSTE PARA MODO HORIZONTAL (LANDSCAPE) */
         @media (orientation: landscape) {
-            .hp12c { padding: 30px 10px 20px 10px; }
-            .lcd-frame { margin-bottom: 20px; }
+            .hp12c { padding: 30px 10px 25px 10px; max-height: 98vh; }
+            .lcd-frame { margin-bottom: 18px; }
+            .lcd { height: 50px; }
+            #main-display { font-size: 32px; }
+            .keypad { gap: 22px 6px; } /* Reduzido gap vertical de 26px para 22px */
+            .btn { height: 34px; font-size: 10px; }
+            .btn-enter { height: 90px; }
+            .top-far { top: -18px; }
+            .bot-far { bottom: -18px; }
         }
     </style>
 </head>
@@ -127,6 +134,7 @@
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playClick() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
         osc.type = 'sine'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
         gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
@@ -226,7 +234,7 @@
     function toggleSign() { playClick(); stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
     function pressDot() { playClick(); if(!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue.replace('.', ','); }
     function resetAll() { location.reload(); }
-    function toggleFullScreen() { playClick(); document.documentElement.requestFullscreen(); }
+    function toggleFullScreen() { playClick(); if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
 </script>
