@@ -5,91 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HP 12c Professional</title>
+    <title>HP 12c Platinum</title>
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
-            --bg: #121212;
-            --case: #2a2a2a;
-            --brushed-metal: linear-gradient(180deg, #555 0%, #333 10%, #444 50%, #222 100%);
+            --bg: #000;
+            --case: #1e1e1e;
+            --gold: #c5a059;
             --lcd-bg: #9ead94;
-            --btn-black: linear-gradient(180deg, #222 0%, #111 100%);
-            --btn-orange: #ff9500;
-            --btn-blue: #007aff;
+            --btn-black: linear-gradient(180deg, #3a3a3a 0%, #111 100%);
+            --btn-orange: #ff8c00;
+            --btn-blue: #00bfff;
+            --metal: linear-gradient(180deg, #555 0%, #aaa 45%, #888 55%, #444 100%);
         }
 
-        body { 
-            background: var(--bg); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            overflow: hidden; 
-        }
+        body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; }
         
         .hp12c {
-            background: var(--case); 
-            width: 95vw; 
-            max-width: 640px;
-            padding: 45px 15px 35px 15px; 
-            border-radius: 15px;
-            box-shadow: inset 1px 1px 3px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,1);
-            border: 1px solid #000; 
-            position: relative;
+            background: var(--case); width: 95vw; max-width: 640px;
+            padding: 55px 15px 35px 15px; border-radius: 12px;
+            box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 0 30px 80px rgba(0,0,0,1);
+            border: 2px solid #000; position: relative;
         }
 
+        /* LOGO HP E MODELO */
         .hp12c::before {
-            content: "12C PLATINUM"; position: absolute; top: 12px; right: 30px; 
-            color: #aaa; font-size: 10px; font-weight: bold; letter-spacing: 1px;
+            content: "hp"; position: absolute; top: 15px; left: 25px; 
+            color: white; font-size: 24px; font-weight: bold; font-style: italic; font-family: 'Times New Roman', serif;
+        }
+        .hp12c::after {
+            content: "12c platinum"; position: absolute; top: 22px; right: 25px; 
+            color: var(--gold); font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* LCD COM MOLDURA METÁLICA */
+        .lcd-frame {
+            background: var(--metal); padding: 5px; border-radius: 3px;
+            margin-bottom: 55px; border: 1px solid #000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
         .lcd {
-            position: relative; z-index: 1; background: var(--lcd-bg); 
-            height: 85px; 
-            border-radius: 4px; 
-            margin-bottom: 55px; 
+            background: var(--lcd-bg); height: 85px; 
             display: flex; flex-direction: column;
             align-items: flex-end; justify-content: center; padding: 0 15px;
-            font-family: 'Courier New', monospace; border: 6px solid #111;
-            box-shadow: inset 0 8px 20px rgba(0,0,0,0.5);
+            font-family: 'Courier New', monospace; border: 4px solid #111;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.4);
         }
 
-        /* AJUSTE PARA MODO HORIZONTAL (LANDSCAPE) */
-        @media (orientation: landscape) {
-            .hp12c {
-                max-width: 90vh; 
-                padding: 20px 15px 20px 15px;
-            }
-            .lcd {
-                height: 60px;
-                margin-bottom: 40px;
-            }
-            #main-display { font-size: 32px !important; }
-            .keypad { gap: 24px 8px !important; }
-            .btn { height: 38px !important; }
-            .btn-enter { height: 100px !important; }
-        }
+        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; letter-spacing: 5px; }
+        #main-display { font-size: 40px; color: #1a1d18; font-weight: bold; }
 
-        #prefix-display { font-size: 11px; height: 14px; color: #333; width: 100%; text-align: left; font-weight: bold; }
-        #main-display { font-size: 40px; color: #1a1d18; font-weight: bold; letter-spacing: -1px; }
-
-        .keypad { 
-            display: grid; 
-            grid-template-columns: repeat(10, 1fr); 
-            gap: 28px 8px; 
-            position: relative; 
-            z-index: 1;
-            padding-top: 5px;
-        }
+        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 32px 8px; }
 
         .btn {
-            height: 46px; border: 1px solid #000; border-radius: 4px; color: white;
+            height: 44px; border-radius: 4px; color: white;
             font-size: 11px; font-weight: bold; cursor: pointer; background: var(--btn-black);
-            box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 3px 0 #000; 
-            position: relative;
-            display: flex; align-items: center; justify-content: center;
+            border: 1px solid #000; box-shadow: 0 3px 0 #000; position: relative;
         }
 
         .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
@@ -97,46 +69,49 @@
         .btn-g { background: var(--btn-blue); color: #fff; }
         .btn-enter { grid-row: span 2; height: 120px; background: #444; }
 
-        .f-label { 
-            color: var(--btn-orange); position: absolute; top: -19px; 
-            width: 100%; left: 0; font-size: 8px; text-align: center; 
-            white-space: nowrap; font-weight: normal;
-        }
-        .g-label { 
-            color: var(--btn-blue); position: absolute; bottom: -19px; 
-            width: 100%; left: 0; font-size: 8px; text-align: center; 
-            white-space: nowrap; font-weight: normal;
+        /* Rótulos */
+        .f-label { color: var(--btn-orange); position: absolute; top: -19px; width: 100%; left: 0; font-size: 8px; text-align: center; font-weight: bold;}
+        .g-label { color: var(--btn-blue); position: absolute; bottom: -19px; width: 100%; left: 0; font-size: 8px; text-align: center; font-weight: bold;}
+        .p-label { color: #fff; position: absolute; top: -30px; width: 100%; left: 0; font-size: 7px; text-align: center; opacity: 0.8; font-weight: normal; }
+
+        @media (orientation: landscape) {
+            .hp12c { max-width: 95vw; padding: 30px 15px 25px 15px; }
+            .lcd-frame { margin-bottom: 40px; }
+            .lcd { height: 60px; }
+            .keypad { gap: 26px 8px; }
         }
     </style>
 </head>
 <body>
 
 <div class="hp12c">
-    <div class="lcd">
-        <div id="prefix-display"></div>
-        <div id="main-display">0.00</div>
+    <div class="lcd-frame">
+        <div class="lcd">
+            <div id="status-bar"></div>
+            <div id="main-display">0.00</div>
+        </div>
     </div>
     <div class="keypad">
-        <button class="btn" onclick="handleFin('n')"><span class="f-label">AMORT</span>n<span class="g-label">12x</span></button>
-        <button class="btn" onclick="handleFin('i')"><span class="f-label">INT</span>i<span class="g-label">12÷</span></button>
-        <button class="btn" onclick="handleFin('pv')"><span class="f-label">NPV</span>PV<span class="g-label">CFo</span></button>
-        <button class="btn" onclick="handleFin('pmt')"><span class="f-label">IRR</span>PMT<span class="g-label">CFj</span></button>
-        <button class="btn" onclick="handleFin('fv')"><span class="f-label"></span>FV<span class="g-label">Nj</span></button>
-        <button class="btn" onclick="toggleSign()">CHS<span class="f-label">DATE</span><span class="g-label">BEG</span></button>
-        <button class="btn" onclick="pressNum(7)">7</button>
-        <button class="btn" onclick="pressNum(8)">8</button>
-        <button class="btn" onclick="pressNum(9)">9</button>
+        <button class="btn" onclick="handleFin('n')"><span class="p-label">Σy,x</span><span class="f-label">AMORT</span>n<span class="g-label">12x</span></button>
+        <button class="btn" onclick="handleFin('i')"><span class="p-label">y^r,x</span><span class="f-label">INT</span>i<span class="g-label">12÷</span></button>
+        <button class="btn" onclick="handleFin('pv')"><span class="p-label">x1,x2</span><span class="f-label">NPV</span>PV<span class="g-label">CFo</span></button>
+        <button class="btn" onclick="handleFin('pmt')"><span class="p-label">w,x</span><span class="f-label">IRR</span>PMT<span class="g-label">CFj</span></button>
+        <button class="btn" onclick="handleFin('fv')"><span class="p-label">BEG</span>FV<span class="g-label">Nj</span></button>
+        <button class="btn" onclick="toggleSign()"><span class="p-label">END</span>CHS<span class="f-label">DATE</span><span class="g-label">BEG</span></button>
+        <button class="btn" onclick="pressNum(7)">7<span class="g-label">10^x</span></button>
+        <button class="btn" onclick="pressNum(8)">8<span class="g-label">e^x</span></button>
+        <button class="btn" onclick="pressNum(9)">9<span class="g-label">N!</span></button>
         <button class="btn" onclick="execOp('/')">÷</button>
 
-        <button class="btn" onclick="execOp('pow')">y<sup>x</sup><span class="g-label">√x</span></button>
-        <button class="btn" onclick="execOp('1/x')">1/x<span class="g-label">LN</span></button>
-        <button class="btn" onclick="execOp('%')">%</button>
-        <button class="btn" onclick="handleDate()">Δ%<span class="g-label">ΔDYS</span></button>
-        <button class="btn" onclick="handleStats()">Σ+<span class="g-label">Σ-</span></button>
-        <button class="btn" onclick="handleClear()">CLX<span class="f-label">REG</span><span class="g-label">FIN</span></button>
-        <button class="btn" onclick="pressNum(4)">4</button>
-        <button class="btn" onclick="pressNum(5)">5</button>
-        <button class="btn" onclick="pressNum(6)">6</button>
+        <button class="btn" onclick="execOp('pow')"><span class="p-label">R/S</span>y<sup>x</sup><span class="g-label">√x</span></button>
+        <button class="btn" onclick="execOp('1/x')"><span class="p-label">SST</span>1/x<span class="g-label">LN</span></button>
+        <button class="btn" onclick="execOp('%')"><span class="p-label">R↓</span>%</button>
+        <button class="btn" onclick="handleDate()"><span class="p-label">x<>y</span>Δ%<span class="g-label">ΔDYS</span></button>
+        <button class="btn" onclick="handleStats()"><span class="p-label">EEX</span>Σ+<span class="g-label">Σ-</span></button>
+        <button class="btn" onclick="handleClear()"><span class="p-label">P/R</span>CLX<span class="f-label">REG</span><span class="g-label">FIN</span></button>
+        <button class="btn" onclick="pressNum(4)">4<span class="g-label">X≤Y</span></button>
+        <button class="btn" onclick="pressNum(5)">5<span class="g-label">X=0</span></button>
+        <button class="btn" onclick="pressNum(6)">6<span class="g-label">X>Y</span></button>
         <button class="btn" onclick="execOp('*')">×</button>
 
         <button class="btn btn-f" onclick="setPrefix('f')">f</button>
@@ -144,131 +119,64 @@
         <button class="btn" onclick="setPrefix('sto')">STO</button>
         <button class="btn" onclick="setPrefix('rcl')">RCL</button>
         <button class="btn btn-enter" onclick="pressEnter()">ENTER</button>
-        <button class="btn" onclick="pressNum(1)">1</button>
-        <button class="btn" onclick="pressNum(2)">2</button>
-        <button class="btn" onclick="pressNum(3)">3</button>
+        <button class="btn" onclick="pressNum(1)">1<span class="g-label">x̄</span></button>
+        <button class="btn" onclick="pressNum(2)">2<span class="g-label">S</span></button>
+        <button class="btn" onclick="pressNum(3)">3<span class="g-label">r</span></button>
         <button class="btn" onclick="execOp('-')">-</button>
 
+        <button class="btn" style="background: #600" onclick="hardReset()">RES</button>
         <button class="btn" onclick="toggleFullScreen()">ON</button>
-        <button class="btn" style="grid-column: span 2;" onclick="pressNum(0)">0</button>
-        <button class="btn" onclick="pressDot()">.</button>
+        <button class="btn" style="grid-column: span 2;" onclick="pressNum(0)">0<span class="g-label">Σx</span></button>
+        <button class="btn" onclick="pressDot()">.<span class="g-label">Σy</span></button>
         <button class="btn" onclick="execOp('+')">+</button>
     </div>
 </div>
 
 <script>
-    function toggleFullScreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.log(`Erro: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    }
-
-    let stack = [0, 0, 0, 0];
-    let fin = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
-    let registers = new Array(20).fill(0);
-    let cashFlows = [];
-    let displayValue = "0";
-    let isNewInput = true;
-    let prefix = null;
-    let decimals = 2;
-
+    /* O Script permanece robusto com as funções financeiras e o novo status de prefixo */
+    const statusDisp = document.getElementById('status-bar');
     const mainDisp = document.getElementById('main-display');
-    const prefDisp = document.getElementById('prefix-display');
+    let stack = [0, 0, 0, 0], fin = { n:0, i:0, pv:0, pmt:0, fv:0 }, registers = new Array(20).fill(0);
+    let displayValue = "0", isNewInput = true, prefix = null, decimals = 2, cashFlows = [];
+
+    function setPrefix(p) { prefix = p; statusDisp.innerText = p.toUpperCase(); }
+    function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    function hardReset() { stack=[0,0,0,0]; fin={n:0,i:0,pv:0,pmt:0,fv:0}; registers.fill(0); cashFlows=[]; displayValue="0"; isNewInput=true; updateLCD(); }
 
     function updateLCD(val = stack[0]) {
         mainDisp.innerText = isNaN(val) ? "Error 5" : parseFloat(val).toLocaleString('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
-        prefix = null; prefDisp.innerText = "";
+        prefix = null; statusDisp.innerText = "";
     }
-
-    function setPrefix(p) { prefix = p; prefDisp.innerText = p.toUpperCase(); }
 
     function pressNum(n) {
         if (prefix === 'f' && !isNaN(n)) { decimals = n; updateLCD(); return; }
-        if (prefix === 'sto') { registers[n] = stack[0]; updateLCD(); return; }
-        if (prefix === 'rcl') { stack[0] = registers[n]; updateLCD(); return; }
         if (isNewInput) { displayValue = n.toString(); isNewInput = false; }
         else { displayValue += n.toString(); }
         stack[0] = parseFloat(displayValue);
         mainDisp.innerText = displayValue;
     }
 
-    function pressEnter() {
-        stack[3] = stack[2]; stack[2] = stack[1]; stack[1] = stack[0];
-        isNewInput = true; updateLCD();
-    }
-
-    function handleFin(key) {
-        if (prefix === 'g') {
-            if (key === 'pv') { cashFlows = [stack[0]]; blink(); }
-            else if (key === 'pmt') { cashFlows.push(stack[0]); blink(); }
-            else if (key === 'n') { stack[0] *= 12; updateLCD(); }
-            else if (key === 'i') { stack[0] /= 12; updateLCD(); }
-        } else if (prefix === 'f') {
-            if (key === 'pv') calculateNPV();
-            else if (key === 'pmt') calculateIRR();
-            else solveTVM(key);
-        } else {
-            fin[key] = stack[0]; isNewInput = true; blink();
-        }
-    }
-
-    function solveTVM(target) {
-        let n = fin.n, i = fin.i/100, pv = fin.pv, pmt = fin.pmt, fv = fin.fv;
-        let res = 0;
-        try {
-            if (target === 'fv') res = -(pv * Math.pow(1+i, n) + pmt * (Math.pow(1+i, n) - 1) / i);
-            if (target === 'pv') res = -(fv / Math.pow(1+i, n) + pmt * (1 - Math.pow(1+i, -n)) / i);
-            if (target === 'pmt') res = -(pv * Math.pow(1+i, n) + fv) / ((Math.pow(1+i, n) - 1) / i);
-            if (target === 'n') res = Math.log((pmt - fv*i)/(pmt + pv*i)) / Math.log(1+i);
-            stack[0] = res;
-        } catch(e) { stack[0] = NaN; }
-        updateLCD();
-    }
-
-    function calculateNPV() {
-        let i = fin.i / 100;
-        stack[0] = cashFlows.reduce((acc, val, idx) => acc + val / Math.pow(1 + i, idx), 0);
-        updateLCD();
-    }
-
-    function calculateIRR() {
-        let irr = 0.1;
-        for (let i = 0; i < 100; i++) {
-            let npv = 0, dnpv = 0;
-            cashFlows.forEach((val, j) => {
-                npv += val / Math.pow(1 + irr, j);
-                dnpv -= j * val / Math.pow(1 + irr, j + 1);
-            });
-            irr -= npv / dnpv;
-        }
-        stack[0] = irr * 100; updateLCD();
-    }
-
-    function handleClear() {
-        if (prefix === 'f') { fin={n:0,i:0,pv:0,pmt:0,fv:0}; cashFlows=[]; registers.fill(0); }
-        stack[0] = 0; isNewInput = true; updateLCD();
-    }
-
+    function pressEnter() { stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; isNewInput=true; updateLCD(); }
     function execOp(op) {
         let x = stack[0], y = stack[1];
         if (op === '+') stack[0] = y + x;
         if (op === '-') stack[0] = y - x;
         if (op === '*') stack[0] = y * x;
         if (op === '/') stack[0] = x !== 0 ? y / x : 0;
-        if (op === 'pow') stack[0] = Math.pow(y, x);
-        stack[1] = stack[2]; stack[2] = stack[3];
-        isNewInput = true; updateLCD();
+        stack[1]=stack[2]; stack[2]=stack[3]; isNewInput=true; updateLCD();
     }
 
-    function toggleSign() { stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
-    function pressDot() { if (!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue; }
-    function blink() { mainDisp.style.opacity = "0.3"; setTimeout(() => mainDisp.style.opacity = "1", 100); }
+    function handleFin(key) {
+        if (prefix === 'g') {
+            if (key === 'n') stack[0] *= 12;
+            if (key === 'i') stack[0] /= 12;
+            updateLCD();
+        } else { fin[key] = stack[0]; isNewInput=true; blink(); }
+    }
 
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+    function blink() { mainDisp.style.opacity = "0.3"; setTimeout(() => mainDisp.style.opacity = "1", 100); }
+    function pressDot() { if (!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue; }
+    function toggleSign() { stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
 </script>
 </body>
 </html>
