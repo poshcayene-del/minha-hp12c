@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HP 12c Platinum Pro</title>
+    <link rel="manifest" href="manifest.json">
+    <title>HP 12c Platinum</title>
     <style>
         :root {
             --bg: #000;
@@ -13,110 +14,54 @@
             --btn-black: linear-gradient(180deg, #3a3a3a 0%, #111 100%);
             --btn-orange: #ff8c00;
             --btn-blue: #00bfff;
-            --metal: linear-gradient(180deg, #555 0%, #aaa 45%, #888 55%, #444 100%);
         }
 
         body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; }
         
         .hp12c {
-            background: var(--case); width: 94vw; max-width: 620px;
-            padding: 55px 15px 45px 15px; border-radius: 12px;
-            box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 0 30px 80px rgba(0,0,0,1);
-            border: 2px solid #000; position: relative;
-            box-sizing: border-box;
+            background: var(--case); width: 94vw; max-width: 600px;
+            padding: 45px 12px 35px 12px; border-radius: 10px;
+            box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 0 20px 50px rgba(0,0,0,1);
+            position: relative; box-sizing: border-box;
         }
 
-        /* ESTRUTURA DE ETIQUETAS SIMÉTRICA */
-        .p-label, .f-label, .g-label {
-            position: absolute; width: 100%; left: 0; text-align: center; pointer-events: none;
-        }
-
+        /* ETIQUETAS COM ESPAÇAMENTO REDUZIDO */
+        .p-label, .f-label, .g-label { position: absolute; width: 100%; left: 0; text-align: center; pointer-events: none; }
         .p-label { color: #fff; font-size: 7px; opacity: 0.8; }
         .f-label { color: var(--btn-orange); font-size: 8px; font-weight: bold; }
         .g-label { color: var(--btn-blue); font-size: 9px; font-weight: bold; }
         
-        /* Posicionamento Topo */
-        .top-far { top: -33px; }   /* Branco longe (Programação) */
-        .top-near { top: -19px; }  /* Laranja perto (Funções f) */
+        /* Aproximando as letras dos botões */
+        .top-far { top: -26px; }   /* Antes era -33px */
+        .top-near { top: -14px; }  /* Antes era -19px */
+        .bot-near { bottom: -12px; } /* Antes era -16px */
+        .bot-far { bottom: -24px; }  /* Antes era -29px */
 
-        /* Posicionamento Base */
-        .bot-near { bottom: -16px; } /* Laranja/Branco perto (ex: REG) */
-        .bot-far { bottom: -29px; }  /* Azul longe (Funções g) */
+        .lcd-frame { background: #888; padding: 3px; border-radius: 3px; margin-bottom: 35px; border: 1px solid #000; }
+        .lcd { background: var(--lcd-bg); height: 70px; display: flex; align-items: center; justify-content: flex-end; padding: 0 15px; font-family: 'Courier New', monospace; border: 3px solid #111; font-weight: bold; font-size: 38px; }
+
+        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 28px 6px; } /* Gap reduzido de 45px para 28px */
+        
+        .btn {
+            height: 40px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; 
+            background: var(--btn-black); border: 1px solid #000; box-shadow: 0 2px 0 #000; 
+            position: relative; display: flex; align-items: center; justify-content: center;
+        }
+
+        .btn-enter { grid-row: span 2; height: 108px; background: #444; }
 
         @media (orientation: landscape) {
-            .hp12c { width: 92vw; max-width: 820px; padding: 15px 15px 25px 15px; }
-            .hp12c::before, .hp12c::after { display: none; }
-            .lcd-frame { margin-bottom: 35px !important; }
-            .lcd { height: 45px !important; font-size: 30px !important; }
-            .keypad { gap: 34px 6px !important; }
-            .btn { height: 32px !important; }
-            .btn-enter { height: 98px !important; }
-            .top-far { top: -26px; } .top-near { top: -15px; }
-            .bot-near { bottom: -14px; } .bot-far { bottom: -24px; }
+            .hp12c { padding: 15px 10px 20px 10px; }
+            .lcd-frame { margin-bottom: 25px !important; }
+            .lcd { height: 40px !important; font-size: 28px !important; }
+            .keypad { gap: 22px 5px !important; }
+            .btn { height: 30px !important; }
+            .btn-enter { height: 82px !important; }
+            .top-far { top: -20px; } .top-near { top: -11px; }
+            .bot-near { bottom: -10px; } .bot-far { bottom: -20px; }
         }
-
-        .hp12c::before { content: "hp"; position: absolute; top: 15px; left: 25px; color: white; font-size: 24px; font-weight: bold; font-style: italic; font-family: 'Times New Roman', serif; }
-        .hp12c::after { content: "12c platinum"; position: absolute; top: 22px; right: 25px; color: var(--gold); font-size: 14px; font-weight: bold; text-transform: uppercase; }
-
-        .lcd-frame { background: var(--metal); padding: 4px; border-radius: 3px; margin-bottom: 55px; border: 1px solid #000; }
-        .lcd { background: var(--lcd-bg); height: 80px; display: flex; align-items: center; justify-content: flex-end; padding: 0 15px; font-family: 'Courier New', monospace; border: 3px solid #111; font-weight: bold; font-size: 40px; }
-
-        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 45px 6px; }
-        .btn {
-            height: 44px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; 
-            background: var(--btn-black); border: 1px solid #000; box-shadow: 0 3px 0 #000; 
-            position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer;
-        }
-        .btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #000; }
-        .btn-f { background: var(--btn-orange); color: #000; z-index: 10; }
-        .btn-g { background: var(--btn-blue); color: #fff; z-index: 10; }
-        .btn-enter { grid-row: span 2; height: 133px; background: #444; }
     </style>
 </head>
 <body>
-
-<div class="hp12c">
-    <div class="lcd-frame"><div class="lcd" id="display">0.00</div></div>
-    <div class="keypad">
-        <button class="btn"><span class="p-label top-far">Σy,x</span><span class="f-label top-near">AMORT</span>n<span class="g-label bot-far">12x</span></button>
-        <button class="btn"><span class="p-label top-far">y^r,x</span><span class="f-label top-near">INT</span>i<span class="g-label bot-far">12÷</span></button>
-        <button class="btn"><span class="p-label top-far">x1,x2</span><span class="f-label top-near">NPV</span>PV<span class="g-label bot-far">CFo</span></button>
-        <button class="btn"><span class="p-label top-far">w,x</span><span class="f-label top-near">IRR</span>PMT<span class="g-label bot-far">CFj</span></button>
-        <button class="btn"><span class="p-label top-far">BEG</span>FV<span class="g-label bot-far">Nj</span></button>
-        <button class="btn"><span class="p-label top-far">END</span><span class="f-label top-near">DATE</span>CHS<span class="g-label bot-far">BEG</span></button>
-        <button class="btn">7<span class="g-label bot-far">10^x</span></button>
-        <button class="btn">8<span class="g-label bot-far">e^x</span></button>
-        <button class="btn">9<span class="g-label bot-far">N!</span></button>
-        <button class="btn">÷</button>
-
-        <button class="btn"><span class="p-label top-far">R/S</span>y<sup>x</sup><span class="g-label bot-far">√x</span></button>
-        <button class="btn"><span class="p-label top-far">SST</span>1/x<span class="g-label bot-far">LN</span></button>
-        <button class="btn"><span class="p-label top-far">R↓</span>%<span class="g-label bot-far">LOG</span></button>
-        <button class="btn"><span class="p-label top-far">x<>y</span>Δ%<span class="g-label bot-far">ΔDYS</span></button>
-        <button class="btn"><span class="p-label top-far">EEX</span>Σ+<span class="g-label bot-far">Σ-</span></button>
-        <button class="btn"><span class="p-label top-far">P/R</span>CLX<span class="f-label bot-near">REG</span><span class="g-label bot-far">FIN</span></button>
-        <button class="btn">4<span class="g-label bot-far">X≤Y</span></button>
-        <button class="btn">5<span class="g-label bot-far">X=0</span></button>
-        <button class="btn">6<span class="g-label bot-far">X>Y</span></button>
-        <button class="btn">×</button>
-
-        <button class="btn btn-f">f</button>
-        <button class="btn btn-g">g</button>
-        <button class="btn">STO</button>
-        <button class="btn">RCL</button>
-        <button class="btn btn-enter">ENTER</button>
-        <button class="btn">1<span class="g-label bot-far">x̄</span></button>
-        <button class="btn">2<span class="g-label bot-far">s</span></button>
-        <button class="btn">3<span class="g-label bot-far">r</span></button>
-        <button class="btn">-</button>
-
-        <button class="btn" style="background: #600">RES</button>
-        <button class="btn">ON</button>
-        <button class="btn" style="grid-column: span 2;">0<span class="g-label bot-far">Σx</span></button>
-        <button class="btn">.<span class="g-label bot-far">Σy</span></button>
-        <button class="btn">+</button>
-    </div>
-</div>
-
-</body>
+    </body>
 </html>
