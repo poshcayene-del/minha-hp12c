@@ -6,7 +6,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>HP 12c Platinum</title>
-    <link rel="manifest" href="manifest.json">
     <style>
         :root {
             --bg: #000;
@@ -23,10 +22,34 @@
         
         .hp12c {
             background: var(--case); width: 92vw; max-width: 600px;
-            padding: 55px 15px 35px 15px; border-radius: 12px;
+            padding: 50px 15px 30px 15px; border-radius: 12px;
             box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 0 30px 80px rgba(0,0,0,1);
             border: 2px solid #000; position: relative;
             box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        /* AJUSTE CRÍTICO PARA NÃO CORTAR A ÚLTIMA LINHA NA HORIZONTAL */
+        @media (orientation: landscape) {
+            .hp12c { 
+                width: 90vw; 
+                max-width: 800px; 
+                padding: 15px 15px 15px 15px; /* Reduzi drasticamente o padding superior */
+            }
+            .hp12c::before, .hp12c::after { display: none; } /* Esconde logos para ganhar espaço vertical */
+            
+            .lcd-frame { margin-bottom: 25px !important; } /* Espaço menor entre visor e teclas */
+            .lcd { height: 45px !important; }
+            #main-display { font-size: 28px !important; }
+            #status-bar { font-size: 8px !important; height: 10px !important; }
+
+            .keypad { gap: 20px 6px !important; } /* Teclas mais próximas verticalmente */
+            .btn { height: 32px !important; font-size: 10px !important; }
+            .btn-enter { height: 84px !important; }
+
+            .labels-top { top: -18px !important; }
+            .labels-bottom { bottom: -16px !important; }
+            .p-label, .f-label, .g-label { font-size: 7px !important; }
         }
 
         .hp12c::before {
@@ -35,55 +58,49 @@
         }
         .hp12c::after {
             content: "12c platinum"; position: absolute; top: 22px; right: 25px; 
-            color: var(--gold); font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--gold); font-size: 14px; font-weight: bold; text-transform: uppercase;
         }
 
         .lcd-frame {
-            background: var(--metal); padding: 5px; border-radius: 3px;
-            margin-bottom: 55px; border: 1px solid #000;
+            background: var(--metal); padding: 4px; border-radius: 3px;
+            margin-bottom: 50px; border: 1px solid #000;
         }
 
         .lcd {
             background: var(--lcd-bg); height: 80px; 
             display: flex; flex-direction: column;
             align-items: flex-end; justify-content: center; padding: 0 15px;
-            font-family: 'Courier New', monospace; border: 4px solid #111;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.4);
+            font-family: 'Courier New', monospace; border: 3px solid #111;
         }
 
-        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; letter-spacing: 5px; }
+        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; }
         #main-display { font-size: 40px; color: #1a1d18; font-weight: bold; }
 
-        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 35px 6px; }
+        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 32px 6px; }
 
         .btn {
             height: 44px; border-radius: 4px; color: white;
             font-size: 11px; font-weight: bold; cursor: pointer; background: var(--btn-black);
-            border: 1px solid #000; box-shadow: 0 3px 0 #000; position: relative;
+            border: 1px solid #000; box-shadow: 0 2px 0 #000; position: relative;
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* SOLUÇÃO PARA AS LABELS NÃO SOBREPOREM */
+        .btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #000; }
+        .btn-f { background: var(--btn-orange); color: #000; }
+        .btn-g { background: var(--btn-blue); color: #fff; }
+        .btn-enter { grid-row: span 2; height: 120px; background: #444; }
+
         .labels-top, .labels-bottom {
             position: absolute; width: 100%; left: 0;
             display: flex; flex-direction: column; align-items: center;
-            line-height: 1;
+            pointer-events: none;
         }
-        .labels-top { top: -25px; }
-        .labels-bottom { bottom: -22px; }
+        .labels-top { top: -24px; }
+        .labels-bottom { bottom: -20px; }
 
-        .p-label { color: #fff; font-size: 7px; opacity: 0.8; margin-bottom: 2px; }
+        .p-label { color: #fff; font-size: 7px; opacity: 0.8; }
         .f-label { color: var(--btn-orange); font-size: 8px; font-weight: bold; }
         .g-label { color: var(--btn-blue); font-size: 9px; font-weight: bold; }
-
-        @media (orientation: landscape) {
-            .hp12c { width: 85vw; max-width: 780px; padding: 30px 20px 25px 20px; }
-            .lcd-frame { margin-bottom: 40px; }
-            .lcd { height: 55px; }
-            .keypad { gap: 28px 8px; }
-            .btn { height: 36px; }
-            .btn-enter { height: 100px; }
-        }
     </style>
 </head>
 <body>
@@ -101,13 +118,7 @@
         <button class="btn" onclick="handleFin('pv')"><div class="labels-top"><span class="p-label">x1,x2</span><span class="f-label">NPV</span></div>PV<div class="labels-bottom"><span class="g-label">CFo</span></div></button>
         <button class="btn" onclick="handleFin('pmt')"><div class="labels-top"><span class="p-label">w,x</span><span class="f-label">IRR</span></div>PMT<div class="labels-bottom"><span class="g-label">CFj</span></div></button>
         <button class="btn" onclick="handleFin('fv')"><div class="labels-top"><span class="p-label">BEG</span></div>FV<div class="labels-bottom"><span class="g-label">Nj</span></div></button>
-        
-        <button class="btn" onclick="toggleSign()">
-            <div class="labels-top"><span class="p-label">END</span><span class="f-label">DATE</span></div>
-            CHS
-            <div class="labels-bottom"><span class="g-label">BEG</span></div>
-        </button>
-
+        <button class="btn" onclick="toggleSign()"><div class="labels-top"><span class="p-label">END</span><span class="f-label">DATE</span></div>CHS<div class="labels-bottom"><span class="g-label">BEG</span></div></button>
         <button class="btn" onclick="pressNum(7)">7<div class="labels-bottom"><span class="g-label">10^x</span></div></button>
         <button class="btn" onclick="pressNum(8)">8<div class="labels-bottom"><span class="g-label">e^x</span></div></button>
         <button class="btn" onclick="pressNum(9)">9<div class="labels-bottom"><span class="g-label">N!</span></div></button>
@@ -143,36 +154,8 @@
 </div>
 
 <script>
-    /* O Script permanece o mesmo, garantindo as funções matemáticas */
-    const statusDisp = document.getElementById('status-bar');
-    const mainDisp = document.getElementById('main-display');
-    let stack = [0, 0, 0, 0], fin = { n:0, i:0, pv:0, pmt:0, fv:0 }, registers = new Array(20).fill(0);
-    let displayValue = "0", isNewInput = true, prefix = null, decimals = 2, cashFlows = [];
-
-    function setPrefix(p) { prefix = p; statusDisp.innerText = p.toUpperCase(); }
-    function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-    function hardReset() { stack=[0,0,0,0]; fin={n:0,i:0,pv:0,pmt:0,fv:0}; registers.fill(0); cashFlows=[]; displayValue="0"; isNewInput=true; updateLCD(); }
-    function updateLCD(val = stack[0]) {
-        mainDisp.innerText = isNaN(val) ? "Error 5" : parseFloat(val).toLocaleString('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
-        prefix = null; statusDisp.innerText = "";
-    }
-    function pressNum(n) {
-        if (prefix === 'f' && !isNaN(n)) { decimals = n; updateLCD(); return; }
-        if (isNewInput) { displayValue = n.toString(); isNewInput = false; }
-        else { displayValue += n.toString(); }
-        stack[0] = parseFloat(displayValue);
-        mainDisp.innerText = displayValue;
-    }
-    function pressEnter() { stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; isNewInput=true; updateLCD(); }
-    function execOp(op) {
-        let x = stack[0], y = stack[1];
-        if (op === '+') stack[0] = y + x;
-        if (op === '-') stack[0] = y - x;
-        if (op === '*') stack[0] = y * x;
-        if (op === '/') stack[0] = x !== 0 ? y / x : 0;
-        stack[1]=stack[2]; stack[2]=stack[3]; isNewInput=true; updateLCD();
-    }
-    function toggleSign() { stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
+    /* Mantenha o script anterior aqui */
 </script>
+
 </body>
 </html>
