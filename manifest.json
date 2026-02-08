@@ -1,16 +1,17 @@
 {
-  "name": "HP 12c Platinum",
-  "short_name": "HP12c",
-  "start_url": "index.html",
+  "name": "HP 12c C.S.O.",
+  "short_name": "HP12c CSO",
+  "description": "Calculadora HP 12c Platinum Personalizada",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#1e1e1e",
+  "theme_color": "#c5a059",
+  "orientation": "any",
   "icons": [
     {
-      "src": "hp12.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/234/234158.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ]
 }
-
