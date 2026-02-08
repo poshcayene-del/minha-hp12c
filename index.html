@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HP 12c Platinum Clone</title>
+    <title>HP 12c Ultimate PWA</title>
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -16,48 +16,46 @@
             --btn-blue: #007aff;
         }
 
-        body { background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; overflow: hidden; }
+        body { background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
         
         .hp12c {
-            background: var(--case);
-            width: 95vw; max-width: 620px;
-            padding: 30px 20px; border-radius: 12px;
-            box-shadow: inset 1px 1px 3px rgba(255,255,255,0.1), 0 25px 50px rgba(0,0,0,0.9);
+            background: var(--case); width: 95vw; max-width: 620px;
+            padding: 35px 20px; border-radius: 15px;
+            box-shadow: inset 1px 1px 3px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,1);
             border: 1px solid #000; position: relative;
         }
 
         .hp12c::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 105px;
-            background: var(--brushed-metal); border-radius: 12px 12px 0 0; border-bottom: 2px solid #111;
+            content: "12C PLATINUM"; position: absolute; top: 10px; right: 30px; 
+            color: #aaa; font-size: 10px; font-weight: bold; letter-spacing: 1px;
         }
 
         .lcd {
-            position: relative; z-index: 1; background: var(--lcd-bg); height: 75px;
+            position: relative; z-index: 1; background: var(--lcd-bg); height: 80px;
             border-radius: 4px; margin-bottom: 30px; display: flex; flex-direction: column;
             align-items: flex-end; justify-content: center; padding: 0 15px;
-            font-family: 'Courier New', monospace; border: 5px solid #111;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.4);
+            font-family: 'Courier New', monospace; border: 6px solid #111;
+            box-shadow: inset 0 8px 20px rgba(0,0,0,0.5);
         }
 
-        #prefix-display { font-size: 11px; height: 14px; color: #333; width: 100%; text-align: left; font-weight: bold; }
-        #main-display { font-size: 38px; color: #1a1d18; font-weight: bold; }
+        #prefix-display { font-size: 12px; height: 16px; color: #333; width: 100%; text-align: left; font-weight: bold; }
+        #main-display { font-size: 42px; color: #1a1d18; font-weight: bold; letter-spacing: -1px; }
 
-        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 10px 6px; position: relative; z-index: 1; }
+        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 12px 6px; position: relative; z-index: 1; }
 
         .btn {
             height: 44px; border: 1px solid #000; border-radius: 4px; color: white;
             font-size: 10px; font-weight: bold; cursor: pointer; background: var(--btn-black);
             box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 3px 0 #000; position: relative;
-            display: flex; align-items: center; justify-content: center;
         }
 
         .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
         .btn-f { background: var(--btn-orange); color: #000; }
         .btn-g { background: var(--btn-blue); color: #fff; }
-        .btn-enter { grid-row: span 2; height: 98px; }
+        .btn-enter { grid-row: span 2; height: 100px; background: #444; }
 
-        .f-label { color: var(--btn-orange); position: absolute; top: -15px; width: 100%; left: 0; font-size: 8px; text-align: center; }
-        .g-label { color: var(--btn-blue); position: absolute; bottom: -15px; width: 100%; left: 0; font-size: 8px; text-align: center; }
+        .f-label { color: var(--btn-orange); position: absolute; top: -16px; width: 100%; left: 0; font-size: 8px; text-align: center; }
+        .g-label { color: var(--btn-blue); position: absolute; bottom: -16px; width: 100%; left: 0; font-size: 8px; text-align: center; }
     </style>
 </head>
 <body>
@@ -70,7 +68,7 @@
     <div class="keypad">
         <button class="btn" onclick="handleFin('n')"><span class="f-label">AMORT</span>n<span class="g-label">12x</span></button>
         <button class="btn" onclick="handleFin('i')"><span class="f-label">INT</span>i<span class="g-label">12÷</span></button>
-        <button class="btn" onclick="handleFin('pv')"><span class="f-label">NPV</span>PV<span class="g-label">CF0</span></button>
+        <button class="btn" onclick="handleFin('pv')"><span class="f-label">NPV</span>PV<span class="g-label">CFo</span></button>
         <button class="btn" onclick="handleFin('pmt')"><span class="f-label">IRR</span>PMT<span class="g-label">CFj</span></button>
         <button class="btn" onclick="handleFin('fv')"><span class="f-label"></span>FV<span class="g-label">Nj</span></button>
         <button class="btn" onclick="toggleSign()">CHS<span class="f-label">DATE</span><span class="g-label">BEG</span></button>
@@ -82,7 +80,7 @@
         <button class="btn" onclick="execOp('pow')">y<sup>x</sup><span class="g-label">√x</span></button>
         <button class="btn" onclick="execOp('1/x')">1/x<span class="g-label">LN</span></button>
         <button class="btn" onclick="execOp('%')">%</button>
-        <button class="btn" onclick="handleDate('diff')">Δ%<span class="g-label">ΔDYS</span></button>
+        <button class="btn" onclick="handleDate()">Δ%<span class="g-label">ΔDYS</span></button>
         <button class="btn" onclick="handleStats()">Σ+<span class="g-label">Σ-</span></button>
         <button class="btn" onclick="handleClear()">CLX<span class="f-label">REG</span><span class="g-label">FIN</span></button>
         <button class="btn" onclick="pressNum(4)">4</button>
@@ -110,7 +108,8 @@
 <script>
     let stack = [0, 0, 0, 0];
     let fin = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
-    let stats = { n: 0, sumX: 0, sumX2: 0, sumY: 0, sumY2: 0, sumXY: 0 };
+    let registers = new Array(20).fill(0);
+    let cashFlows = []; // Para NPV/IRR
     let displayValue = "0";
     let isNewInput = true;
     let prefix = null;
@@ -120,16 +119,17 @@
     const prefDisp = document.getElementById('prefix-display');
 
     function updateLCD(val = stack[0]) {
-        if (isNaN(val)) { mainDisp.innerText = "Error 5"; }
-        else { mainDisp.innerText = parseFloat(val).toLocaleString('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals}); }
-        prefix = null;
-        prefDisp.innerText = "";
+        mainDisp.innerText = isNaN(val) ? "Error 5" : parseFloat(val).toLocaleString('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
+        prefix = null; prefDisp.innerText = "";
     }
 
     function setPrefix(p) { prefix = p; prefDisp.innerText = p.toUpperCase(); }
 
     function pressNum(n) {
-        if (prefix === 'f') { decimals = n; updateLCD(); return; }
+        if (prefix === 'f' && !isNaN(n)) { decimals = n; updateLCD(); return; }
+        if (prefix === 'sto') { registers[n] = stack[0]; updateLCD(); return; }
+        if (prefix === 'rcl') { stack[0] = registers[n]; updateLCD(); return; }
+        
         if (isNewInput) { displayValue = n.toString(); isNewInput = false; }
         else { displayValue += n.toString(); }
         stack[0] = parseFloat(displayValue);
@@ -143,68 +143,52 @@
 
     function handleFin(key) {
         if (prefix === 'g') {
+            if (key === 'pv') cashFlows = [stack[0]]; // CFo
+            if (key === 'pmt') cashFlows.push(stack[0]); // CFj
             if (key === 'n') stack[0] *= 12;
             if (key === 'i') stack[0] /= 12;
-            updateLCD();
+            blink(); updateLCD();
         } else if (prefix === 'f') {
-            solveTVM(key);
+            if (key === 'pv') calculateNPV();
+            if (key === 'pmt') calculateIRR();
+            else solveTVM(key);
         } else {
-            fin[key] = stack[0];
-            isNewInput = true; blink();
+            fin[key] = stack[0]; isNewInput = true; blink();
         }
     }
 
     function solveTVM(target) {
-        const n = fin.n, i = (fin.i / 100), pv = fin.pv, pmt = fin.pmt, fv = fin.fv;
+        let n = fin.n, i = fin.i/100, pv = fin.pv, pmt = fin.pmt, fv = fin.fv;
         let res = 0;
-        try {
-            if (target === 'fv') res = -(pv * Math.pow(1+i, n) + pmt * (Math.pow(1+i, n) - 1) / i);
-            if (target === 'pv') res = -(fv / Math.pow(1+i, n) + pmt * (1 - Math.pow(1+i, -n)) / i);
-            if (target === 'pmt') res = -(pv * Math.pow(1+i, n) + fv) / ((Math.pow(1+i, n) - 1) / i);
-            if (target === 'n') res = Math.log((pmt - fv*i)/(pmt + pv*i)) / Math.log(1+i);
-            if (target === 'i') res = calculateRate(n, pmt, pv, fv) * 100;
-            stack[0] = res;
-        } catch(e) { stack[0] = NaN; }
-        updateLCD();
+        if (target === 'fv') res = -(pv * Math.pow(1+i, n) + pmt * (Math.pow(1+i, n) - 1) / i);
+        if (target === 'pv') res = -(fv / Math.pow(1+i, n) + pmt * (1 - Math.pow(1+i, -n)) / i);
+        if (target === 'pmt') res = -(pv * Math.pow(1+i, n) + fv) / ((Math.pow(1+i, n) - 1) / i);
+        if (target === 'n') res = Math.log((pmt - fv*i)/(pmt + pv*i)) / Math.log(1+i);
+        stack[0] = res; updateLCD();
     }
 
-    function calculateRate(n, pmt, pv, fv) {
-        let i = 0.01;
-        for (let j = 0; j < 100; j++) {
-            let t1 = Math.pow(1+i, n);
-            let f = pv * t1 + pmt * (t1 - 1) / i + fv;
-            let df = n * pv * Math.pow(1+i, n-1) + pmt * (n*i*Math.pow(1+i, n-1) - t1 + 1) / (i*i);
-            i = i - f / df;
+    function calculateNPV() {
+        let i = fin.i / 100;
+        let npv = cashFlows.reduce((acc, val, idx) => acc + val / Math.pow(1 + i, idx), 0);
+        stack[0] = npv; updateLCD();
+    }
+
+    function calculateIRR() {
+        let irr = 0.1;
+        for (let i = 0; i < 200; i++) {
+            let npv = 0, dnpv = 0;
+            for (let j = 0; j < cashFlows.length; j++) {
+                npv += cashFlows[j] / Math.pow(1 + irr, j);
+                dnpv -= j * cashFlows[j] / Math.pow(1 + irr, j + 1);
+            }
+            irr -= npv / dnpv;
         }
-        return i;
+        stack[0] = irr * 100; updateLCD();
     }
 
-    function handleStats() {
-        if (prefix === 'g') { // Média (x-bar)
-            stack[0] = stats.n > 0 ? stats.sumX / stats.n : 0;
-        } else { // Soma (Sigma +)
-            const x = stack[0];
-            stats.n++; stats.sumX += x; stats.sumX2 += x*x;
-            stack[0] = stats.n;
-        }
-        isNewInput = true; updateLCD();
-    }
-
-    function handleDate(mode) {
-        if (prefix === 'g') { // Diferença de dias
-            const d1 = parseDate(stack[1]);
-            const d2 = parseDate(stack[0]);
-            stack[0] = Math.round(Math.abs(d2 - d1) / (1000*60*60*24));
-            updateLCD();
-        }
-    }
-
-    function parseDate(val) {
-        let s = val.toFixed(6).toString();
-        let day = parseInt(s.split('.')[0]);
-        let month = parseInt(s.split('.')[1].substring(0,2)) - 1;
-        let year = parseInt(s.split('.')[1].substring(2,6));
-        return new Date(year, month, day);
+    function handleClear() {
+        if (prefix === 'f') { fin = {n:0,i:0,pv:0,pmt:0,fv:0}; cashFlows = []; }
+        stack[0] = 0; isNewInput = true; updateLCD();
     }
 
     function execOp(op) {
@@ -214,22 +198,15 @@
         if (op === '*') stack[0] = y * x;
         if (op === '/') stack[0] = x !== 0 ? y / x : 0;
         if (op === 'pow') stack[0] = Math.pow(y, x);
-        if (op === '1/x') stack[0] = 1/x;
-        
-        if (['+','-','*','/','pow'].includes(op)) { stack[1] = stack[2]; stack[2] = stack[3]; }
+        stack[1] = stack[2]; stack[2] = stack[3];
         isNewInput = true; updateLCD();
-    }
-
-    function handleClear() {
-        if (prefix === 'f') { fin = {n:0,i:0,pv:0,pmt:0,fv:0}; stats = {n:0,sumX:0,sumX2:0}; }
-        stack[0] = 0; displayValue = "0"; isNewInput = true; updateLCD();
     }
 
     function toggleSign() { stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
     function pressDot() { if (!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue; }
     function blink() { mainDisp.style.opacity = "0.3"; setTimeout(() => mainDisp.style.opacity = "1", 100); }
 
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
 </html>
