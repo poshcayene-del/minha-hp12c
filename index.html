@@ -163,7 +163,10 @@
             prefix = null; isNewInput = true; updateLCD(); return;
         }
         if (isNewInput) { 
-            stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; // Empilha ao começar digitar novo número
+            // Só empilha no início do dígito se não estivermos limpando o visor
+            if (displayValue !== "0") {
+                stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0];
+            }
             displayValue = n.toString(); 
             isNewInput = false; 
         } else { 
@@ -180,13 +183,11 @@
         updateLCD(); 
     }
 
-    function setPrefix(p) { playClick(); prefix = (prefix === p) ? null : p; updateLCD(); }
-
     function handleTVM(key) {
         playClick();
         if (prefix === 'g') {
-            if (key === 'pv') { cf = [stack[0]]; isNewInput = true; } 
-            else if (key === 'pmt') { cf.push(stack[0]); isNewInput = true; }
+            if (key === 'pv') { cf = [stack[0]]; } 
+            else if (key === 'pmt') { cf.push(stack[0]); }
             else if (key === 'n') tvm.n = stack[0] * 12;
             else if (key === 'i') tvm.i = stack[0] / 12;
             prefix = null;
@@ -195,8 +196,8 @@
             prefix = null;
         } else {
             tvm[key] = stack[0];
-            isNewInput = true;
         }
+        isNewInput = true;
         updateLCD();
     }
 
@@ -217,8 +218,9 @@
             if (prefix === 'g') stats.pop();
             else { stats.push(stack[0]); stack[0] = stats.length; }
         } else if (type === '%') {
-            if (prefix === 'g') stack[0] = calculateDays(stack[1], stack[0]);
-            else execOp('delta%');
+            if (prefix === 'g') {
+                stack[0] = calculateDays(stack[1], stack[0]);
+            } else { execOp('delta%'); return; }
         }
         prefix = null; isNewInput = true; updateLCD();
     }
@@ -248,7 +250,7 @@
         else if(op === 'pow') stack[0] = Math.pow(y, x);
         else if(op === 'delta%') stack[0] = ((x - y) / y) * 100;
         
-        stack[1]=stack[2]; stack[2]=stack[3]; // Sobe a pilha
+        stack[1]=stack[2]; stack[2]=stack[3];
         isNewInput = true; updateLCD();
     }
 
