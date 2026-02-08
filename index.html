@@ -18,13 +18,26 @@
             --btn-blue: #007aff;
         }
 
-        body { background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; overflow: hidden; }
+        body { 
+            background: var(--bg); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            overflow: hidden; 
+        }
         
         .hp12c {
-            background: var(--case); width: 95vw; max-width: 640px;
-            padding: 45px 15px 35px 15px; border-radius: 15px;
+            background: var(--case); 
+            width: 95vw; 
+            max-width: 640px;
+            padding: 45px 15px 35px 15px; 
+            border-radius: 15px;
             box-shadow: inset 1px 1px 3px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,1);
-            border: 1px solid #000; position: relative;
+            border: 1px solid #000; 
+            position: relative;
         }
 
         .hp12c::before {
@@ -41,6 +54,22 @@
             align-items: flex-end; justify-content: center; padding: 0 15px;
             font-family: 'Courier New', monospace; border: 6px solid #111;
             box-shadow: inset 0 8px 20px rgba(0,0,0,0.5);
+        }
+
+        /* AJUSTE PARA MODO HORIZONTAL (LANDSCAPE) */
+        @media (orientation: landscape) {
+            .hp12c {
+                max-width: 90vh; 
+                padding: 20px 15px 20px 15px;
+            }
+            .lcd {
+                height: 60px;
+                margin-bottom: 40px;
+            }
+            #main-display { font-size: 32px !important; }
+            .keypad { gap: 24px 8px !important; }
+            .btn { height: 38px !important; }
+            .btn-enter { height: 100px !important; }
         }
 
         #prefix-display { font-size: 11px; height: 14px; color: #333; width: 100%; text-align: left; font-weight: bold; }
@@ -128,11 +157,10 @@
 </div>
 
 <script>
-    /* NOVA FUNÇÃO: TELA CHEIA */
     function toggleFullScreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch(err => {
-                console.log(`Erro ao tentar modo tela cheia: ${err.message}`);
+                console.log(`Erro: ${err.message}`);
             });
         } else {
             document.exitFullscreen();
