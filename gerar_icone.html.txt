@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <canvas id="canvas" width="512" height="512"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Fundo Preto Profundo
+    ctx.fillStyle = '#121212';
+    ctx.fillRect(0, 0, 512, 512);
+
+    // Borda Dourada sutil
+    ctx.strokeStyle = '#c5a059';
+    ctx.lineWidth = 20;
+    ctx.strokeRect(10, 10, 492, 492);
+
+    // Texto HP (Itálico)
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold italic 80px "Times New Roman"';
+    ctx.fillText('hp', 60, 140);
+
+    // Texto 12c (Dourado)
+    ctx.fillStyle = '#c5a059';
+    ctx.font = 'bold 160px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('12c', 256, 320);
+
+    // Texto PLATINUM
+    ctx.font = 'bold 40px Arial';
+    ctx.letterSpacing = "10px";
+    ctx.fillText('PLATINUM', 256, 380);
+  </script>
+  <p>Segure na imagem acima para salvar como <b>hp12.png</b></p>
+</body>
+</html>
