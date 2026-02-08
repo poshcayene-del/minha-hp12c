@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HP 12c Professional PWA</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --bg: #121212;
+            --case: #2a2a2a;
+            --brushed-metal: linear-gradient(180deg, #555 0%, #333 10%, #444 50%, #222 100%);
+            --lcd-bg: #9ead94;
+            --btn-black: linear-gradient(180deg, #222 0%, #111 100%);
+            --btn-orange: #ff9500;
+            --btn-blue: #007aff;
+        }
+
+        body { background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; overflow: hidden; }
+        
+        .hp12c {
+            background: var(--case);
+            width: 90vw; max-width: 600px;
+            padding: 25px; border-radius: 12px;
+            box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,0.9);
+            border: 1px solid #000; position: relative;
+        }
+
+        .hp12c::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 100px;
+            background: var(--brushed-metal); border-radius: 12px 12px 0 0; border-bottom: 2px solid #111; z-index: 0;
+        }
+
+        .lcd {
+            position: relative; z-index: 1; background: var(--lcd-bg); height: 70px;
+            border-radius: 4px; margin-bottom: 25px; display: flex; flex-direction: column;
+            align-items: flex-end; justify-content: center; padding: 0 15px;
+            font-family: 'Courier New', monospace; border: 5px solid #111;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        #prefix-display { font-size: 12px; height: 15px; color: #444; width: 100%; text-align: left; }
+        #main-display { font-size: 36px; color: #1a1d18; font-weight: bold; }
+
+        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; position: relative; z-index: 1; }
+
+        .btn {
+            height: 45px; border: 1px solid #000; border-radius: 4px; color: white;
+            font-size: 10px; font-weight: bold; cursor: pointer; background: var(--btn-black);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 0 3px 0 #000; position: relative;
+        }
+
+        .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
+        .btn-f { background: var(--btn-orange); color: #000; }
+        .btn-g { background: var(--btn-blue); color: #fff; }
+        .btn-enter { grid-row: span 2; height: 98px; }
+
+        .f-label { color: var(--btn-orange); position: absolute; top: -14px; width: 100%; left: 0; font-size: 8px; }
+        .g-label { color: var(--btn-blue); position: absolute; bottom: -14px; width: 100%; left: 0; font-size: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="hp12c">
+    <div class="lcd">
+        <div id="prefix-display"></div>
+        <div id="main-display">0.00</div>
+    </div>
+    <div class="keypad">
+        <button class="btn" onclick="handleFin('n')"><span class="f-label">AMORT</span>n<span class="g-label">12x</span></button>
+        <button class="btn" onclick="handleFin('i')"><span class="f-label">INT</span>i<span class="g-label">12÷</span></button>
+        <button class="btn" onclick="handleFin('pv')"><span class="f-label">NPV</span>PV<span class="g-label">CF0</span></button>
+        <button class="btn" onclick="handleFin('pmt')"><span class="f-label">IRR</span>PMT<span class="g-label">CFj</span></button>
+        <button class="btn" onclick="handleFin('fv')"><span class="f-label"></span>FV<span class="g-label">Nj</span></button>
+        <button class="btn" onclick="toggleSign()">CHS</button>
+        <button class="btn" onclick="pressNum(7)">7</button>
+        <button class="btn" onclick="pressNum(8)">8</button>
+        <button class="btn" onclick="pressNum(9)">9</button>
+        <button class="btn" onclick="execOp('/')">÷</button>
+
+        <button class="btn">y<sup>x</sup></button>
+        <button class="btn">1/x</button>
+        <button class="btn">%</button>
+        <button class="btn">Δ%</button>
+        <button class="btn">EEX</button>
+        <button class="btn" onclick="handleClear()">CLX<span class="f-label">REG</span></button>
+        <button class="btn" onclick="pressNum(4)">4</button>
+        <button class="btn" onclick="pressNum(5)">5</button>
+        <button class="btn" onclick="pressNum(6)">6</button>
+        <button class="btn" onclick="execOp('*')">×</button>
+
+        <button class="btn btn-f" onclick="setPrefix('f')">f</button>
+        <button class="btn btn-g" onclick="setPrefix('g')">g</button>
+        <button class="btn">STO</button>
+        <button class="btn">RCL</button>
+        <button class="btn btn-enter" onclick="pressEnter()">ENTER</button>
+        <button class="btn" onclick="pressNum(1)">1</button>
+        <button class="btn" onclick="pressNum(2)">2</button>
+        <button class="btn" onclick="pressNum(3)">3</button>
+        <button class="btn" onclick="execOp('-')">-</button>
+
+        <button class="btn">ON</button>
+        <button class="btn" style="grid-column: span 2;" onclick="pressNum(0)">0</button>
+        <button class="btn" onclick="pressDot()">.</button>
+        <button class="btn" onclick="execOp('+')">+</button>
+    </div>
+</div>
+
+<script>
+    let stack = [0, 0, 0, 0];
+    let fin = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
+    let displayValue = "0";
+    let isNewInput = true;
+    let prefix = null;
+    let decimals = 2;
+
+    const mainDisp = document.getElementById('main-display');
+    const prefDisp = document.getElementById('prefix-display');
+
+    function updateLCD(val = stack[0]) {
+        mainDisp.innerText = parseFloat(val).toFixed(decimals);
+        prefix = null;
+        prefDisp.innerText = "";
+    }
+
+    function setPrefix(p) {
+        prefix = p;
+        prefDisp.innerText = p.toUpperCase();
+    }
+
+    function pressNum(n) {
+        if (isNewInput) { displayValue = n.toString(); isNewInput = false; }
+        else { displayValue += n.toString(); }
+        stack[0] = parseFloat(displayValue);
+        mainDisp.innerText = displayValue;
+    }
+
+    function pressEnter() {
+        stack[3] = stack[2]; stack[2] = stack[1]; stack[1] = stack[0];
+        isNewInput = true; updateLCD();
+    }
+
+    function handleFin(key) {
+        if (prefix === 'g') {
+            if (key === 'n') stack[0] *= 12;
+            if (key === 'i') stack[0] /= 12;
+            updateLCD();
+        } else if (prefix === 'f') {
+            solveTVM(key);
+        } else {
+            fin[key] = stack[0];
+            isNewInput = true; blink();
+        }
+    }
+
+    function solveTVM(target) {
+        const n = fin.n, i = fin.i / 100, pv = fin.pv, pmt = fin.pmt, fv = fin.fv;
+        let res = 0;
+        if (target === 'fv') res = -(pv * Math.pow(1+i, n) + pmt * (Math.pow(1+i, n) - 1) / i);
+        if (target === 'pv') res = -(fv / Math.pow(1+i, n) + pmt * (1 - Math.pow(1+i, -n)) / i);
+        stack[0] = res;
+        updateLCD();
+    }
+
+    function execOp(op) {
+        let x = stack[0], y = stack[1];
+        let res = 0;
+        if (op === '+') res = y + x;
+        if (op === '-') res = y - x;
+        if (op === '*') res = y * x;
+        if (op === '/') res = x !== 0 ? y / x : 0;
+        stack[0] = res; stack[1] = stack[2]; stack[2] = stack[3];
+        isNewInput = true; updateLCD();
+    }
+
+    function handleClear() {
+        if (prefix === 'f') fin = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
+        stack[0] = 0; displayValue = "0"; isNewInput = true; updateLCD();
+    }
+
+    function toggleSign() { stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
+    function pressDot() { if (!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue; }
+    function blink() { mainDisp.style.opacity = "0.3"; setTimeout(() => mainDisp.style.opacity = "1", 100); }
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+    }
+</script>
+</body>
+</html>
