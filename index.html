@@ -126,7 +126,7 @@
     let stack = [0, 0, 0, 0];
     let tvm = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
     let cf = []; 
-    let stats = []; // Lista para estatística
+    let stats = [];
     let regs = new Array(10).fill(0);
     let prefix = null, displayValue = "0", isNewInput = true;
 
@@ -158,11 +158,9 @@
         playClick();
         if (prefix === 'sto') { regs[n] = stack[0]; prefix = null; updateLCD(); return; }
         if (prefix === 'rcl') { stack[0] = regs[n]; prefix = null; updateLCD(); return; }
-        if (prefix === 'g') {
-            if (n === 0) { // g + 0 (Média)
-                stack[0] = stats.length > 0 ? stats.reduce((a,b) => a+b, 0) / stats.length : 0;
-                prefix = null; isNewInput = true; updateLCD(); return;
-            }
+        if (prefix === 'g' && n === 0) {
+            stack[0] = stats.length > 0 ? stats.reduce((a,b) => a+b, 0) / stats.length : 0;
+            prefix = null; isNewInput = true; updateLCD(); return;
         }
         if (isNewInput) { displayValue = n.toString(); isNewInput = false; }
         else { displayValue += n.toString(); }
@@ -205,31 +203,27 @@
     function handleSpecial(type) {
         playClick();
         if (type === 'sum') {
-            if (prefix === 'g') { // Σ- (Remover último)
-                stats.pop();
-            } else { // Σ+ (Adicionar e mostrar contador)
-                stats.push(stack[0]);
-                stack[0] = stats.length; 
-            }
+            if (prefix === 'g') stats.pop();
+            else { stats.push(stack[0]); stack[0] = stats.length; }
         } else if (type === '%') {
-            if (prefix === 'g') { // ΔDYS (Diferença de dias)
-                stack[0] = calculateDays(stack[1], stack[0]);
-            } else { execOp('delta%'); }
+            if (prefix === 'g') stack[0] = calculateDays(stack[1], stack[0]);
+            else execOp('delta%');
         }
         prefix = null; isNewInput = true; updateLCD();
     }
 
     function calculateDays(d1, d2) {
-        const parseDate = (num) => {
-            const s = num.toFixed(6).toString();
-            const day = parseInt(s.substring(0,2));
-            const month = parseInt(s.substring(3,5)) - 1;
-            const year = parseInt(s.substring(5,9));
-            return new Date(year, month, day);
+        const parseHP = (n) => {
+            const s = n.toFixed(6);
+            const d = parseInt(s.substring(0, s.indexOf('.')));
+            const rem = s.substring(s.indexOf('.') + 1);
+            const m = parseInt(rem.substring(0, 2)) - 1;
+            const y = parseInt(rem.substring(2, 6));
+            return new Date(y, m, d);
         };
         try {
-            const dt1 = parseDate(d1); const dt2 = parseDate(d2);
-            return Math.floor(Math.abs(dt2 - dt1) / (1000*60*60*24));
+            const date1 = parseHP(d1); const date2 = parseHP(d2);
+            return Math.floor(Math.abs(date2 - date1) / (1000*60*60*24));
         } catch(e) { return 0; }
     }
 
