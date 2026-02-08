@@ -162,13 +162,24 @@
             stack[0] = stats.length > 0 ? stats.reduce((a,b) => a+b, 0) / stats.length : 0;
             prefix = null; isNewInput = true; updateLCD(); return;
         }
-        if (isNewInput) { displayValue = n.toString(); isNewInput = false; }
-        else { displayValue += n.toString(); }
+        if (isNewInput) { 
+            stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; // Empilha ao começar digitar novo número
+            displayValue = n.toString(); 
+            isNewInput = false; 
+        } else { 
+            displayValue += n.toString(); 
+        }
         stack[0] = parseFloat(displayValue);
         mainDisp.innerText = displayValue.replace('.', ',');
     }
 
-    function pressEnter() { playClick(); stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; isNewInput=true; updateLCD(); }
+    function pressEnter() { 
+        playClick(); 
+        stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; 
+        isNewInput = true; 
+        updateLCD(); 
+    }
+
     function setPrefix(p) { playClick(); prefix = (prefix === p) ? null : p; updateLCD(); }
 
     function handleTVM(key) {
@@ -236,7 +247,8 @@
         else if(op === '/') stack[0] = x !== 0 ? y / x : 0;
         else if(op === 'pow') stack[0] = Math.pow(y, x);
         else if(op === 'delta%') stack[0] = ((x - y) / y) * 100;
-        stack[1]=stack[2]; stack[2]=stack[3];
+        
+        stack[1]=stack[2]; stack[2]=stack[3]; // Sobe a pilha
         isNewInput = true; updateLCD();
     }
 
