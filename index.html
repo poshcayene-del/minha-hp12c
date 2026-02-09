@@ -42,7 +42,7 @@
 
         .lcd-frame { background: var(--metal); padding: 3px; border-radius: 3px; margin-bottom: 25px; border: 1px solid #000; position: relative; }
         .lcd { background: var(--lcd-bg); height: 75px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 0 15px; font-family: 'Courier New', monospace; border: 3px solid #111; box-sizing: border-box; }
-        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; letter-spacing: 5px; }
+        #status-bar { font-size: 10px; height: 12px; color: #333; width: 100%; text-align: left; font-weight: bold; letter-spacing: 2px; }
         #main-display { font-size: 42px; color: var(--lcd-text); font-weight: bold; line-height: 1; }
 
         .keypad { display: grid; grid-template-columns: repeat(10, 1fr); gap: 26px 6px; } 
@@ -80,7 +80,7 @@
         <button class="btn" onclick="handleTVM('pv')"><span class="p-label top-far">x1,x2</span><span class="f-label top-near">NPV</span>PV<span class="g-label bot-far">CFo</span></button>
         <button class="btn" onclick="handleTVM('pmt')"><span class="p-label top-far">w,x</span><span class="f-label top-near">IRR</span>PMT<span class="g-label bot-far">CFj</span></button>
         <button class="btn" onclick="handleTVM('fv')"><span class="p-label top-far">BEG</span>FV<span class="g-label bot-far">Nj</span></button>
-        <button class="btn" onclick="toggleSign()"><span class="p-label top-far">END</span><span class="f-label top-near">DATE</span>CHS<span class="g-label bot-far">BEG</span></button>
+        <button class="btn" onclick="handleBegEnd()"><span class="p-label top-far">END</span><span class="f-label top-near">DATE</span>CHS<span class="g-label bot-far">BEG</span></button>
         <button class="btn" onclick="pressNum(7)">7<span class="g-label bot-far">10^x</span></button>
         <button class="btn" onclick="pressNum(8)">8<span class="g-label bot-far">e^x</span></button>
         <button class="btn" onclick="pressNum(9)">9<span class="g-label bot-far">N!</span></button>
@@ -121,13 +121,15 @@
     const body = document.getElementById('main-body');
     
     let stack = [0, 0, 0, 0];
-    let tvm = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
-    let cf = []; let stats = []; let regs = new Array(10).fill(0);
+    let tvm = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0, isBeg: false };
+    let stats = []; let regs = new Array(10).fill(0);
     let prefix = null, displayValue = "0", isNewInput = true;
 
     function updateLCD(val = stack[0]) {
         mainDisp.innerText = val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        statusDisp.innerText = prefix ? prefix.toLowerCase() : "";
+        let status = prefix ? prefix.toLowerCase() : "";
+        if (tvm.isBeg) status += "  BEGIN";
+        statusDisp.innerText = status;
     }
 
     function pressNum(n) {
@@ -149,10 +151,29 @@
         stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; isNewInput = true; updateLCD(); 
     }
 
+    // LÓGICA BEG / END / CHS
+    function handleBegEnd() {
+        if (prefix === 'g') {
+            tvm.isBeg = true; // Ativa BEGIN
+            prefix = null;
+        } else if (prefix === 'f') {
+            // HP usa f + Beg/End? Não, geralmente é g. Mas g + END (tecla 8 ou 7) limpa.
+            // Na HP 12c: g + BEG (tecla CHS) e g + END (tecla 8 ou 7 dependendo do modelo).
+            // Vamos simplificar: g + CHS = BEG. Para tirar, g + 7 (p-label END).
+            prefix = null;
+        } else {
+            toggleSign();
+            return;
+        }
+        isNewInput = true; updateLCD();
+    }
+
+    // Ajuste para desativar BEG (END) usando g + n (onde está a label END)
     function handleTVM(key) {
         if (prefix === 'g') {
             if (key === 'n') tvm.n = stack[0] * 12;
             else if (key === 'i') tvm.i = stack[0] / 12;
+            else if (key === 'fv') tvm.isBeg = false; // g + END (FV/END label)
             prefix = null;
         } else if (!isNewInput) {
             tvm[key] = stack[0];
@@ -164,35 +185,42 @@
 
     function calculateTVM(key) {
         let n = tvm.n, pv = tvm.pv, pmt = tvm.pmt, fv = tvm.fv, i = tvm.i / 100;
+        let begFactor = tvm.isBeg ? (1 + i) : 1;
         
         if (key === 'i') {
-            // MÉTODO DE NEWTON PARA TAXA (i)
-            let x0 = 0.1, x1, f, fDeriv;
-            for (let j = 0; j < 20; j++) {
+            let x0 = 0.01, x1, f, fDeriv;
+            for (let j = 0; j < 50; j++) {
                 let r = 1 + x0;
                 let powN = Math.pow(r, n);
-                f = pv * powN + pmt * (powN - 1) / x0 + fv;
-                fDeriv = n * pv * Math.pow(r, n - 1) + pmt * (n * x0 * Math.pow(r, n - 1) - powN + 1) / (x0 * x0);
+                if (tvm.isBeg) {
+                    f = pv * powN + pmt * (powN - 1) * r / x0 + fv;
+                    // Derivada simplificada para BEG
+                    fDeriv = n * pv * Math.pow(r, n-1) + pmt * ((powN-1)/x0 + r * (n*Math.pow(r, n-1)*x0 - (powN-1))/(x0*x0));
+                } else {
+                    f = pv * powN + pmt * (powN - 1) / x0 + fv;
+                    fDeriv = n * pv * Math.pow(r, n - 1) + pmt * (n * x0 * Math.pow(r, n - 1) - powN + 1) / (x0 * x0);
+                }
                 x1 = x0 - f / fDeriv;
                 if (Math.abs(x1 - x0) < 0.0000001) break;
                 x0 = x1;
             }
-            tvm.i = x1 * 100;
-            stack[0] = tvm.i;
+            tvm.i = x1 * 100; stack[0] = tvm.i;
         } else if (key === 'pmt') {
             let r = 1 + i;
-            stack[0] = -(pv * Math.pow(r, n) + fv) / ((Math.pow(r, n) - 1) / i);
-            tvm.pmt = stack[0];
+            let pmtCalc = -(pv * Math.pow(r, n) + fv) / (((Math.pow(r, n) - 1) / i) * begFactor);
+            stack[0] = pmtCalc; tvm.pmt = pmtCalc;
         } else if (key === 'pv') {
             let r = 1 + i;
-            stack[0] = -(pmt * (Math.pow(r, n) - 1) / i + fv) / Math.pow(r, n);
+            stack[0] = -(pmt * begFactor * (Math.pow(r, n) - 1) / i + fv) / Math.pow(r, n);
             tvm.pv = stack[0];
         } else if (key === 'n') {
-            stack[0] = Math.log((pmt - fv * i) / (pmt + pv * i)) / Math.log(1 + i);
+            // N com BEG é mais complexo, aqui está a aproximação
+            stack[0] = Math.log((pmt * begFactor - fv * i) / (pmt * begFactor + pv * i)) / Math.log(1 + i);
             tvm.n = stack[0];
         }
     }
 
+    // Resto das funções mantidas conforme versão anterior...
     function handleDeltaButton() {
         if (prefix === 'g') { stack[0] = calculateDays(stack[1], stack[0]); prefix = null; }
         else { let novo = stack[0], antigo = stack[1]; stack[0] = ((novo - antigo) / antigo) * 100; stack[1] = stack[2]; stack[2] = stack[3]; }
@@ -202,7 +230,10 @@
     function calculateDays(d1, d2) {
         const parseHP = (n) => {
             let s = n.toFixed(6).toString(); let dotIdx = s.indexOf('.');
-            return new Date(parseInt(s.substring(dotIdx + 3, dotIdx + 7)), parseInt(s.substring(dotIdx + 1, dotIdx + 3)) - 1, parseInt(s.substring(0, dotIdx)));
+            let dia = parseInt(s.substring(0, dotIdx));
+            let mes = parseInt(s.substring(dotIdx+1, dotIdx+3)) - 1;
+            let ano = parseInt(s.substring(dotIdx+3, dotIdx+7));
+            return new Date(ano, mes, dia);
         };
         return Math.round(Math.abs(parseHP(d2) - parseHP(d1)) / 86400000);
     }
@@ -224,7 +255,7 @@
     }
 
     function handleClear() {
-        if (prefix === 'f') { stack = [0,0,0,0]; tvm = {n:0,i:0,pv:0,pmt:0,fv:0}; prefix = null; }
+        if (prefix === 'f') { stack = [0,0,0,0]; tvm = {n:0,i:0,pv:0,pmt:0,fv:0,isBeg:false}; prefix = null; }
         else { stack[0] = 0; displayValue = "0"; }
         isNewInput = true; updateLCD();
     }
