@@ -2,297 +2,205 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>HP 12c Platinum - Funcional</title>
+    <title>HP 12c Platinum - Versão Master Corrigida</title>
     <style>
-        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background: #dcdcdc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: Arial, sans-serif; }
+        * { box-sizing: border-box; user-select: none; }
+        body { background: #c0c0c0; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; }
         
         .hp12c {
-            background: linear-gradient(135deg, #2b2b2b 0%, #1a1a1a 100%);
-            width: 720px; padding: 50px 20px 60px 20px; border-radius: 8px; 
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6); border: 2px solid #000; position: relative;
+            background: #1a1a1a;
+            width: 740px; 
+            padding: 40px 25px 80px 25px; /* Padding inferior aumentado para o L.R. */
+            border-radius: 12px; 
+            box-shadow: 0 50px 100px rgba(0,0,0,0.7);
+            border: 3px solid #000;
+            position: relative;
         }
 
         .faceplate {
-            background: linear-gradient(to bottom, #e6e6e6, #ccc); border: 1px solid #999;
-            border-radius: 4px; padding: 15px; box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #e0e0e0 0%, #bbbbbb 100%);
+            border-radius: 6px; padding: 20px; border: 1px solid #777;
         }
 
-        .lcd-frame {
-            background: #222; padding: 6px; border-radius: 6px; margin-bottom: 30px;
-            width: 280px; margin-left: 15px; border: 1px solid #666;
+        .lcd-container {
+            background: #000; padding: 5px; border-radius: 4px; width: 320px; margin-bottom: 40px;
         }
         .lcd { 
-            background: #9ead94; height: 65px; padding: 5px 10px; 
-            display: flex; flex-direction: column; justify-content: space-between;
-            font-family: 'Courier New', monospace; text-align: right; 
+            background: #9ead94; height: 70px; padding: 10px; text-align: right;
+            border: 2px solid #333; box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
         }
-        #display { font-size: 34px; font-weight: bold; color: #1a1d18; letter-spacing: 1px; overflow: hidden; white-space: nowrap; }
-        .indicators { display: flex; justify-content: space-between; font-size: 10px; font-weight: bold; color: #1a1d18; height: 12px; }
+        #display { font-size: 38px; font-family: 'Courier New', monospace; font-weight: bold; color: #1a1d18; }
+        .indicators { font-size: 11px; color: #1a1d18; height: 12px; font-weight: bold; text-align: left; }
 
-        .logo { position: absolute; top: 65px; right: 50px; text-align: right; }
-        .logo h1 { margin: 0; font-size: 24px; font-weight: 800; font-style: italic; color: #111; }
-        .logo span { font-size: 14px; color: #666; letter-spacing: 1px; text-transform: uppercase; }
+        .logo { position: absolute; top: 60px; right: 50px; text-align: right; }
+        .logo h1 { margin: 0; font-size: 26px; font-style: italic; color: #222; }
 
         .keypad { 
             display: grid; grid-template-columns: repeat(10, 1fr); 
-            grid-template-rows: repeat(4, 46px); gap: 40px 12px; margin-top: 20px;
+            grid-template-rows: repeat(4, 48px); gap: 42px 12px; margin-top: 20px;
         }
 
         .btn-cell { position: relative; width: 100%; height: 100%; }
 
         .btn { 
-            width: 100%; height: 100%; border-radius: 4px; color: #fff; 
-            font-size: 12px; font-weight: bold; 
-            background: linear-gradient(to bottom, #4a4a4a, #222); 
-            border: none; border-bottom: 3px solid #000; border-right: 1px solid #111;
-            cursor: pointer; position: relative; z-index: 2;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+            width: 100%; height: 100%; border-radius: 4px; color: #fff; font-size: 13px; font-weight: bold;
+            background: linear-gradient(180deg, #444 0%, #111 100%); 
+            border: none; border-bottom: 4px solid #000; cursor: pointer; position: relative; z-index: 2;
         }
-        .btn:active { transform: translateY(2px); border-bottom: 1px solid #000; }
-        .btn-f { background: #d68a00 !important; color: #222 !important; border-bottom: 3px solid #9e6600; }
-        .btn-g { background: #0099cc !important; color: #fff !important; border-bottom: 3px solid #005f80; }
-        .cell-enter { grid-column: 6; grid-row: 3 / 5; height: 100%; }
+        .btn:active { transform: translateY(2px); border-bottom: 2px solid #000; }
+        
+        .btn-f { background: #d68a00 !important; color: #000 !important; border-bottom-color: #935f00 !important; }
+        .btn-g { background: #0099cc !important; border-bottom-color: #006b8f !important; }
+        .btn-enter { grid-column: 6; grid-row: 3 / 5; height: 100% !important; background: #555 !important; }
 
-        .lbl-f { position: absolute; top: -16px; width: 100%; text-align: center; color: #d68a00; font-size: 9px; font-weight: 800; pointer-events: none; }
-        .lbl-g { position: absolute; bottom: -18px; width: 100%; text-align: center; color: #0099cc; font-size: 9px; font-weight: 800; pointer-events: none; }
-        .lbl-w { position: absolute; top: -26px; width: 100%; text-align: center; color: #111; font-size: 9px; font-weight: 600; pointer-events: none; }
+        .lbl-f { position: absolute; top: -18px; width: 100%; text-align: center; color: #d68a00; font-size: 10px; font-weight: bold; }
+        .lbl-g { position: absolute; bottom: -20px; width: 100%; text-align: center; color: #0099cc; font-size: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="hp12c">
     <div class="faceplate">
-        <div class="logo"><h1>hp 12c</h1><span>platinum</span></div>
-        <div class="lcd-frame">
+        <div class="logo"><h1>hp 12c</h1><small>platinum</small></div>
+        <div class="lcd-container">
             <div class="lcd">
-                <div class="indicators"><span id="ind-f"></span><span id="ind-g"></span><span id="ind-begin"></span><span id="ind-dmy"></span><span id="ind-prgm"></span></div>
+                <div class="indicators"><span id="ind"></span></div>
                 <div id="display">0,00</div>
             </div>
         </div>
 
         <div class="keypad">
-            <div class="btn-cell"><span class="lbl-f">AMORT</span><button class="btn" onclick="exec('n')">n</button><span class="lbl-g">12x</span></div>
-            <div class="btn-cell"><span class="lbl-f">INT</span><button class="btn" onclick="exec('i')">i</button><span class="lbl-g">12÷</span></div>
-            <div class="btn-cell"><span class="lbl-f">NPV</span><button class="btn" onclick="exec('pv')">PV</button><span class="lbl-g">CFo</span></div>
-            <div class="btn-cell"><span class="lbl-f">IRR</span><button class="btn" onclick="exec('pmt')">PMT</button><span class="lbl-g">CFj</span></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('fv')">FV</button><span class="lbl-g">Nj</span></div>
-            <div class="btn-cell"><span class="lbl-f">DATE</span><button class="btn" onclick="exec('chs')">CHS</button><span class="lbl-g">BEG</span></div>
-            <div class="btn-cell"><button class="btn" onclick="num(7)">7</button></div>
-            <div class="btn-cell"><button class="btn" onclick="num(8)">8</button></div>
-            <div class="btn-cell"><button class="btn" onclick="num(9)">9</button></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('/')">÷</button></div>
+            <div class="btn-cell"><span class="lbl-f">AMORT</span><button class="btn" onclick="pressTVM('n')">n</button><span class="lbl-g">12x</span></div>
+            <div class="btn-cell"><span class="lbl-f">INT</span><button class="btn" onclick="pressTVM('i')">i</button><span class="lbl-g">12÷</span></div>
+            <div class="btn-cell"><span class="lbl-f">NPV</span><button class="btn" onclick="pressTVM('pv')">PV</button><span class="lbl-g">CFo</span></div>
+            <div class="btn-cell"><span class="lbl-f">IRR</span><button class="btn" onclick="pressTVM('pmt')">PMT</button><span class="lbl-g">CFj</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressTVM('fv')">FV</button><span class="lbl-g">Nj</span></div>
+            <div class="btn-cell"><span class="lbl-f">DATE</span><button class="btn" onclick="pressOp('chs')">CHS</button><span class="lbl-g">BEG</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(7)">7</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(8)">8</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(9)">9</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('/')">÷</button></div>
 
-            <div class="btn-cell"><button class="btn" onclick="exec('yx')">y<sup>x</sup></button><span class="lbl-g">√x</span></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('1/x')">1/x</button><span class="lbl-g">e<sup>x</sup></span></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('%T')">%T</button><span class="lbl-g">LN</span></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('d%')">Δ%</button><span class="lbl-g">FRAC</span></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('%')">%</button><span class="lbl-g">INTg</span></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('eex')">EEX</button><span class="lbl-g">ODD</span></div>
-            <div class="btn-cell"><button class="btn" onclick="num(4)">4</button></div>
-            <div class="btn-cell"><button class="btn" onclick="num(5)">5</button></div>
-            <div class="btn-cell"><button class="btn" onclick="num(6)">6</button></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('*')">×</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('yx')">y<sup>x</sup></button><span class="lbl-g">√x</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('1x')">1/x</button><span class="lbl-g">e<sup>x</sup></span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('%t')">%T</button><span class="lbl-g">LN</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('delta%')">Δ%</button><span class="lbl-g">FRAC</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('%')">%</button><span class="lbl-g">INTg</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('eex')">EEX</button><span class="lbl-g">ODD</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(4)">4</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(5)">5</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(6)">6</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('*')">×</button></div>
 
-            <div class="btn-cell"><span class="lbl-w">P/R</span><button class="btn" onclick="exec('rs')">R/S</button><span class="lbl-g">PSE</span></div>
-            <div class="btn-cell"><span class="lbl-w">BST</span><button class="btn" onclick="exec('sst')">SST</button><span class="lbl-g">GTO</span></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('rol')">R↓</button><span class="lbl-g">x≤y</span></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('xy')">x<>y</button><span class="lbl-g">x=0</span></div>
-            <div class="btn-cell"><span class="lbl-f">REG</span><button class="btn" onclick="exec('clx')">CLX</button><span class="lbl-g">FIN</span></div>
-            <div class="btn-cell cell-enter"><button class="btn" onclick="exec('enter')">ENTER</button></div> <div class="btn-cell"><button class="btn" onclick="num(1)">1</button><span class="lbl-g">x̄</span></div>
-            <div class="btn-cell"><button class="btn" onclick="num(2)">2</button><span class="lbl-g">s</span></div>
-            <div class="btn-cell"><button class="btn" onclick="num(3)">3</button><span class="lbl-g">n!</span></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('-')">-</button></div>
+            <div class="btn-cell"><button class="btn">R/S</button></div>
+            <div class="btn-cell"><button class="btn">SST</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('rol')">R↓</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('xy')">x<>y</button></div>
+            <div class="btn-cell"><span class="lbl-f">REG</span><button class="btn" onclick="pressOp('clx')">CLX</button><span class="lbl-g">FIN</span></div>
+            <button class="btn btn-enter" onclick="pressEnter()">ENTER</button>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(1)">1</button><span class="lbl-g">x̄</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(2)">2</button><span class="lbl-g">s</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(3)">3</button><span class="lbl-g">n!</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('-')">-</button></div>
 
-            <div class="btn-cell"><button class="btn" onclick="exec('on')">ON</button></div>
-            <div class="btn-cell"><button class="btn btn-f" onclick="setPre('f')">f</button></div>
-            <div class="btn-cell"><button class="btn btn-g" onclick="setPre('g')">g</button></div>
-            <div class="btn-cell"><button class="btn" onclick="setPre('sto')">STO</button></div>
-            <div class="btn-cell"><button class="btn" onclick="setPre('rcl')">RCL</button></div>
-            <div class="btn-cell" style="grid-column: 7;"><button class="btn" onclick="num(0)">0</button><span class="lbl-g">MEM</span></div>
-            <div class="btn-cell"><button class="btn" onclick="num('.')">.</button><span class="lbl-g">s</span></div>
-            <div class="btn-cell"><span class="lbl-f">x̄w</span><button class="btn" onclick="exec('sigma+')">Σ+</button><span class="lbl-g">Σ-</span></div>
-            <div class="btn-cell"><button class="btn" onclick="exec('+')">+</button><span class="lbl-g">L.R.</span></div>
+            <div class="btn-cell"><button class="btn" onclick="resetCalc()">ON</button></div>
+            <div class="btn-cell"><button class="btn btn-f" onclick="setMode('f')">f</button></div>
+            <div class="btn-cell"><button class="btn btn-g" onclick="setMode('g')">g</button></div>
+            <div class="btn-cell"><button class="btn" onclick="setMode('sto')">STO</button></div>
+            <div class="btn-cell"><button class="btn" onclick="setMode('rcl')">RCL</button></div>
+            <div class="btn-cell" style="grid-column: 7;"><button class="btn" onclick="pressNum(0)">0</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum('.')">.</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('sigma')">Σ+</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('+')">+</button><span class="lbl-g">L.R.</span></div>
         </div>
     </div>
 </div>
 
 <script>
-    // ESTADO DA CALCULADORA
     let stack = [0, 0, 0, 0]; // X, Y, Z, T
-    let lastX = 0;
-    let mem = Array(20).fill(0); // Memória 0-9 e .0-.9
     let tvm = { n:0, i:0, pv:0, pmt:0, fv:0 };
-    let stats = { n:0, sumX:0, sumX2:0, sumY:0, sumY2:0, sumXY:0 };
-    
-    let prefix = null; // 'f', 'g', 'sto', 'rcl'
-    let inputMode = false; // true se o usuário está digitando um número
-    let newNumber = true; // true se o próximo dígito deve iniciar um novo número
+    let stats = { n:0, sumX:0, sumX2:0 };
+    let buffer = ""; 
+    let mode = null;
+    let isTyping = false;
 
-    const display = document.getElementById('display');
-    const indF = document.getElementById('ind-f');
-    const indG = document.getElementById('ind-g');
+    const displayEl = document.getElementById('display');
+    const indEl = document.getElementById('ind');
 
     function updateLCD() {
-        let val = stack[0];
-        // Formatação simples para evitar estouro
-        let str = val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 9});
-        if(str.length > 12) str = val.toExponential(4).replace('.',',');
-        display.innerText = str;
-        indF.innerText = prefix === 'f' ? 'f' : '';
-        indG.innerText = prefix === 'g' ? 'g' : '';
-    }
-
-    function pushStack(val) {
-        stack[3] = stack[2];
-        stack[2] = stack[1];
-        stack[1] = stack[0];
-        stack[0] = val;
-    }
-
-    function liftStack() {
-        // Comportamento do ENTER: T=Z, Z=Y, Y=X, X=X
-        stack[3] = stack[2];
-        stack[2] = stack[1];
-        stack[1] = stack[0];
-        newNumber = true;
-    }
-
-    function dropStack() {
-        stack[0] = stack[1];
-        stack[1] = stack[2];
-        stack[2] = stack[3];
-        // T mantém o valor na descida
-    }
-
-    function num(n) {
-        if (prefix === 'sto' || prefix === 'rcl') { handleMem(n); return; }
-        if (prefix) { handleFuncWithNum(n); return; } // Casos como g + n! (que é 3)
-
-        if (newNumber) {
-            stack[0] = 0;
-            display.innerText = n === '.' ? '0,' : n;
-            stack[0] = parseFloat(n === '.' ? 0 : n);
-            inputMode = true;
-            newNumber = false;
+        if (isTyping) {
+            displayEl.innerText = buffer.replace('.', ',');
         } else {
-            let cur = display.innerText.replace('.','').replace(',','.');
-            if (n === '.' && cur.includes('.')) return;
-            cur += n;
-            display.innerText = cur.replace('.',',');
-            stack[0] = parseFloat(cur);
+            displayEl.innerText = stack[0].toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
+        indEl.innerText = mode ? mode.toUpperCase() : "";
     }
 
-    function setPre(p) {
-        if (prefix === p) prefix = null;
-        else prefix = p;
+    function pressNum(v) {
+        if (mode === 'sto' || mode === 'rcl') return; 
+        if (!isTyping) {
+            buffer = v === '.' ? "0." : v.toString();
+            isTyping = true;
+        } else {
+            if (v === '.' && buffer.includes('.')) return;
+            buffer += v.toString();
+        }
+        stack[0] = parseFloat(buffer);
         updateLCD();
     }
 
-    function handleMem(n) {
-        let idx = parseInt(n);
-        if (prefix === 'sto') mem[idx] = stack[0];
-        if (prefix === 'rcl') { pushStack(stack[0]); stack[0] = mem[idx]; newNumber = true; }
-        prefix = null;
+    function pressEnter() {
+        if (isTyping) { stack[0] = parseFloat(buffer); isTyping = false; }
+        stack[3] = stack[2]; stack[2] = stack[1]; stack[1] = stack[0];
         updateLCD();
     }
 
-    function handleFuncWithNum(n) {
-        // Mapeamento de funções secundárias nas teclas numéricas
-        if(prefix === 'g') {
-            if(n === 1) { /* x medio */ stack[0] = stats.n > 0 ? stats.sumX / stats.n : 0; stack[1] = stats.n > 0 ? stats.sumY / stats.n : 0; newNumber = true; }
-            if(n === 2) { /* desvio s */ let v = (stats.sumX2 - (Math.pow(stats.sumX,2)/stats.n))/(stats.n-1); stack[0] = Math.sqrt(v); newNumber=true; }
-            if(n === 3) { /* n! */ let f=1; for(let i=1;i<=Math.floor(stack[0]);i++) f*=i; stack[0]=f; newNumber=true; }
+    function pressOp(op) {
+        if (isTyping) { stack[0] = parseFloat(buffer); isTyping = false; }
+        
+        if (mode === 'g') {
+            if (op === 'yx') stack[0] = Math.sqrt(stack[0]);
+            if (op === '1x') stack[0] = Math.exp(stack[0]);
+            if (op === 'sigma') { /* sigma - logic */ }
+            mode = null; updateLCD(); return;
         }
-        prefix = null;
+
+        let x = stack[0]; let y = stack[1];
+        if (op === '+') { stack[0] = y + x; drop(); }
+        if (op === '-') { stack[0] = y - x; drop(); }
+        if (op === '*') { stack[0] = y * x; drop(); }
+        if (op === '/') { stack[0] = y / x; drop(); }
+        if (op === 'yx') { stack[0] = Math.pow(y, x); drop(); }
+        if (op === '1x') { stack[0] = 1 / x; }
+        if (op === 'chs') { stack[0] = -x; }
+        if (op === 'clx') { stack[0] = 0; buffer = ""; }
+        if (op === 'xy') { stack[1] = x; stack[0] = y; }
+        if (op === 'rol') { let t = stack[0]; stack[0]=stack[1]; stack[1]=stack[2]; stack[2]=stack[3]; stack[3]=t; }
+        if (op === '%') { stack[0] = y * (x/100); }
+        if (op === 'sigma') { stats.n++; stats.sumX += x; stats.sumX2 += x*x; stack[0] = stats.n; }
+
         updateLCD();
     }
 
-    function exec(op) {
-        // RESET E CLEAR
-        if(op === 'on') { stack=[0,0,0,0]; prefix=null; tvm={n:0,i:0,pv:0,pmt:0,fv:0}; updateLCD(); return; }
-        if(op === 'clx') { 
-            if(prefix === 'f') { stack=[0,0,0,0]; stats={n:0,sumX:0,sumX2:0,sumY:0,sumY2:0,sumXY:0}; } // f REG
-            else { stack[0] = 0; }
-            updateLCD(); prefix = null; return;
-        }
+    function drop() {
+        stack[1] = stack[2]; stack[2] = stack[3];
+    }
 
-        // ENTER
-        if(op === 'enter') { liftStack(); prefix=null; return; }
-
-        // MATEMÁTICA BÁSICA
-        if(['+','-','*','/'].includes(op)) {
-            if(prefix === 'g' && op === '.') { /* L.R. placeholder */ return; } 
-            let y = stack[1];
-            let x = stack[0];
-            let res = 0;
-            if(op==='+') res=y+x;
-            if(op==='-') res=y-x;
-            if(op==='*') res=y*x;
-            if(op==='/') res= (x!==0) ? y/x : 0; // Evita div por zero
-            lastX = x;
-            dropStack();
-            stack[0] = res;
-            newNumber = true;
-        }
-
-        // FUNÇÕES DE UMA VARIÁVEL
-        else if(op === '1/x') { 
-            if(prefix === 'g') { /* e^x */ stack[0] = Math.exp(stack[0]); }
-            else stack[0] = 1/stack[0]; 
-            newNumber = true; 
-        }
-        else if(op === 'chs') { stack[0] = stack[0] * -1; }
-        else if(op === 'yx') {
-            if(prefix === 'g') { /* SQRT */ stack[0] = Math.sqrt(stack[0]); }
-            else { let y=stack[1]; let x=stack[0]; stack[1]=stack[2]; stack[2]=stack[3]; stack[0] = Math.pow(y,x); }
-            newNumber = true;
-        }
-        else if(op === '%') { stack[0] = stack[1] * (stack[0]/100); newNumber=true; }
-        else if(op === 'd%') { stack[0] = ((stack[0] - stack[1]) / stack[1]) * 100; newNumber=true; }
-        else if(op === '%T') { 
-            if(prefix === 'g') { /* LN */ stack[0] = Math.log(stack[0]); }
-            else stack[0] = (stack[0] / stack[1]) * 100;
-            newNumber=true; 
-        }
-
-        // PILHA
-        else if(op === 'xy') { let tmp = stack[0]; stack[0]=stack[1]; stack[1]=tmp; }
-        else if(op === 'rol') { let tmp = stack[0]; stack[0]=stack[1]; stack[1]=stack[2]; stack[2]=stack[3]; stack[3]=tmp; }
-
-        // FINANCEIRA (TVM SIMPLIFICADO)
-        else if(['n','i','pv','pmt','fv'].includes(op)) {
-            if(prefix === 'g' && op === 'n') { tvm.n = stack[0] * 12; newNumber=true; } // 12x
-            else if(prefix === 'g' && op === 'i') { tvm.i = stack[0] / 12; newNumber=true; } // 12/
-            else {
-                tvm[op] = stack[0];
-                newNumber = true;
-                // Calculadora simples: Se clicar na tecla sem valor, tenta calcular (se os outros 4 existirem)
-                // *Lógica completa de Newton-Raphson omitida para brevidade, apenas armazena valores*
-            }
-        }
-
-        // ESTATÍSTICA
-        else if(op === 'sigma+') {
-            if(prefix === 'f') { /* Média Ponderada */ stack[0] = stats.sumXY / stats.sumY; } // x̄w
-            else if(prefix === 'g') { /* Sigma - */
-                stats.n--; stats.sumX-=stack[0]; stats.sumY-=stack[1];
-                stats.sumX2-=stack[0]**2; stats.sumY2-=stack[1]**2; stats.sumXY-=stack[0]*stack[1];
-                stack[0] = stats.n;
-            } else {
-                stats.n++; stats.sumX+=stack[0]; stats.sumY+=stack[1];
-                stats.sumX2+=stack[0]**2; stats.sumY2+=stack[1]**2; stats.sumXY+=stack[0]*stack[1];
-                lastX = stack[0]; stack[0] = stats.n;
-            }
-            newNumber = true;
-        }
-
-        prefix = null;
+    function pressTVM(key) {
+        if (isTyping) { stack[0] = parseFloat(buffer); isTyping = false; }
+        tvm[key] = stack[0];
+        console.log("TVM Updated:", tvm);
         updateLCD();
     }
 
-    // Inicializa
+    function setMode(m) { mode = mode === m ? null : m; updateLCD(); }
+
+    function resetCalc() {
+        stack = [0,0,0,0]; tvm = {n:0,i:0,pv:0,pmt:0,fv:0}; 
+        stats = {n:0,sumX:0,sumX2:0}; buffer = ""; isTyping = false; mode = null;
+        updateLCD();
+    }
+
     updateLCD();
 </script>
 </body>
