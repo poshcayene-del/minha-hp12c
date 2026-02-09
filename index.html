@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="manifest" href="manifest.json">
     <title>HP 12c Platinum - C.S.O.</title>
     <style>
         :root {
@@ -61,8 +60,6 @@
             .keypad { gap: 22px 6px; }
             .btn { height: 34px; font-size: 10px; }
             .btn-enter { height: 90px; }
-            .top-far { top: -18px; }
-            .bot-far { bottom: -18px; }
         }
     </style>
 </head>
@@ -125,28 +122,8 @@
     
     let stack = [0, 0, 0, 0];
     let tvm = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
-    let cf = []; 
-    let stats = [];
-    let regs = new Array(10).fill(0);
+    let cf = []; let stats = []; let regs = new Array(10).fill(0);
     let prefix = null, displayValue = "0", isNewInput = true;
-
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playClick() {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-        osc.type = 'sine'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.05);
-    }
-
-    function toggleTheme() { 
-        playClick(); body.classList.toggle('light-mode'); 
-        localStorage.setItem('hp12-theme', body.classList.contains('light-mode') ? 'light' : 'dark');
-    }
-    
-    window.onload = () => { if(localStorage.getItem('hp12-theme') === 'light') body.classList.add('light-mode'); };
 
     function updateLCD(val = stack[0]) {
         mainDisp.innerText = val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -154,15 +131,12 @@
     }
 
     function pressNum(n) {
-        playClick();
         if (prefix === 'sto') { regs[n] = stack[0]; prefix = null; updateLCD(); return; }
         if (prefix === 'rcl') { stack[0] = regs[n]; prefix = null; updateLCD(); return; }
-        
         if (prefix === 'g' && n === 1) {
             stack[0] = stats.length > 0 ? stats.reduce((a,b) => a+b, 0) / stats.length : 0;
             prefix = null; isNewInput = true; updateLCD(); return;
         }
-
         if (isNewInput) { 
             if (displayValue !== "0") { stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; }
             displayValue = n.toString(); isNewInput = false; 
@@ -172,111 +146,95 @@
     }
 
     function pressEnter() { 
-        playClick(); stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; 
-        isNewInput = true; updateLCD(); 
+        stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; isNewInput = true; updateLCD(); 
     }
-
-    function setPrefix(p) { playClick(); prefix = (prefix === p) ? null : p; updateLCD(); }
 
     function handleTVM(key) {
-        playClick();
         if (prefix === 'g') {
-            if (key === 'pv') { cf = [stack[0]]; } 
-            else if (key === 'pmt') { cf.push(stack[0]); }
-            else if (key === 'n') tvm.n = stack[0] * 12;
+            if (key === 'n') tvm.n = stack[0] * 12;
             else if (key === 'i') tvm.i = stack[0] / 12;
             prefix = null;
-        } else if (prefix === 'f') {
-            if (key === 'pv') calculateNPV();
-            prefix = null;
-        } else { tvm[key] = stack[0]; }
+        } else if (!isNewInput) {
+            tvm[key] = stack[0];
+        } else {
+            calculateTVM(key);
+        }
         isNewInput = true; updateLCD();
     }
 
-    function calculateNPV() {
-        if (cf.length === 0) { stack[0] = 0; } 
-        else {
-            let rate = tvm.i / 100;
-            let npv = cf[0];
-            for (let t = 1; t < cf.length; t++) { npv += cf[t] / Math.pow(1 + rate, t); }
-            stack[0] = npv;
+    function calculateTVM(key) {
+        let n = tvm.n, pv = tvm.pv, pmt = tvm.pmt, fv = tvm.fv, i = tvm.i / 100;
+        
+        if (key === 'i') {
+            // MÉTODO DE NEWTON PARA TAXA (i)
+            let x0 = 0.1, x1, f, fDeriv;
+            for (let j = 0; j < 20; j++) {
+                let r = 1 + x0;
+                let powN = Math.pow(r, n);
+                f = pv * powN + pmt * (powN - 1) / x0 + fv;
+                fDeriv = n * pv * Math.pow(r, n - 1) + pmt * (n * x0 * Math.pow(r, n - 1) - powN + 1) / (x0 * x0);
+                x1 = x0 - f / fDeriv;
+                if (Math.abs(x1 - x0) < 0.0000001) break;
+                x0 = x1;
+            }
+            tvm.i = x1 * 100;
+            stack[0] = tvm.i;
+        } else if (key === 'pmt') {
+            let r = 1 + i;
+            stack[0] = -(pv * Math.pow(r, n) + fv) / ((Math.pow(r, n) - 1) / i);
+            tvm.pmt = stack[0];
+        } else if (key === 'pv') {
+            let r = 1 + i;
+            stack[0] = -(pmt * (Math.pow(r, n) - 1) / i + fv) / Math.pow(r, n);
+            tvm.pv = stack[0];
+        } else if (key === 'n') {
+            stack[0] = Math.log((pmt - fv * i) / (pmt + pv * i)) / Math.log(1 + i);
+            tvm.n = stack[0];
         }
-        isNewInput = true; updateLCD();
     }
 
     function handleDeltaButton() {
-        playClick();
-        if (prefix === 'g') {
-            stack[0] = calculateDays(stack[1], stack[0]);
-            prefix = null;
-        } else {
-            // Δ% na HP: ((Novo - Antigo) / Antigo) * 100
-            // X é o Novo, Y é o Antigo
-            let novo = stack[0];
-            let antigo = stack[1];
-            stack[0] = ((novo - antigo) / antigo) * 100;
-            stack[1] = stack[2]; stack[2] = stack[3]; // Sobe a pilha
-        }
+        if (prefix === 'g') { stack[0] = calculateDays(stack[1], stack[0]); prefix = null; }
+        else { let novo = stack[0], antigo = stack[1]; stack[0] = ((novo - antigo) / antigo) * 100; stack[1] = stack[2]; stack[2] = stack[3]; }
         isNewInput = true; updateLCD();
-    }
-
-    function handleSpecial(type) {
-        playClick();
-        if (type === 'sum') {
-            if (prefix === 'g') { if(stats.length > 0) stats.pop(); }
-            else { stats.push(stack[0]); stack[0] = stats.length; }
-        }
-        prefix = null; isNewInput = true; updateLCD();
     }
 
     function calculateDays(d1, d2) {
         const parseHP = (n) => {
-            let s = n.toFixed(6).toString();
-            let dotIdx = s.indexOf('.');
-            let dia = parseInt(s.substring(0, dotIdx));
-            let resto = s.substring(dotIdx + 1);
-            let mes = parseInt(resto.substring(0, 2)) - 1;
-            let ano = parseInt(resto.substring(2, 6));
-            return new Date(ano, mes, dia);
+            let s = n.toFixed(6).toString(); let dotIdx = s.indexOf('.');
+            return new Date(parseInt(s.substring(dotIdx + 3, dotIdx + 7)), parseInt(s.substring(dotIdx + 1, dotIdx + 3)) - 1, parseInt(s.substring(0, dotIdx)));
         };
-        try {
-            const dt1 = parseHP(d1); const dt2 = parseHP(d2);
-            const diffTime = Math.abs(dt2 - dt1);
-            return Math.round(diffTime / (1000 * 60 * 60 * 24));
-        } catch(e) { return 0; }
+        return Math.round(Math.abs(parseHP(d2) - parseHP(d1)) / 86400000);
     }
 
     function execOp(op) {
-        playClick();
         let x = stack[0], y = stack[1];
-        
         if(op === '+') stack[0] = y + x;
         else if(op === '-') stack[0] = y - x;
         else if(op === '*') stack[0] = y * x;
         else if(op === '/') stack[0] = x !== 0 ? y / x : 0;
-        else if(op === 'pow') stack[0] = Math.pow(y, x); // Y é a base, X é o expoente
-        else if(op === '1/x') stack[0] = x !== 0 ? 1 / x : 0;
-        
-        if (op !== '1/x') {
-            stack[1]=stack[2]; stack[2]=stack[3];
-        }
-        isNewInput = true; updateLCD();
+        else if(op === 'pow') stack[0] = Math.pow(y, x);
+        else if(op === '1/x') { stack[0] = x !== 0 ? 1 / x : 0; isNewInput = true; updateLCD(); return; }
+        stack[1]=stack[2]; stack[2]=stack[3]; isNewInput = true; updateLCD();
+    }
+
+    function handleSpecial(type) {
+        if (type === 'sum') { if (prefix === 'g') stats.pop(); else { stats.push(stack[0]); stack[0] = stats.length; } }
+        prefix = null; isNewInput = true; updateLCD();
     }
 
     function handleClear() {
-        playClick();
-        if (prefix === 'f') { 
-            stack = [0,0,0,0]; tvm = {n:0,i:0,pv:0,pmt:0,fv:0}; cf = []; stats = []; prefix = null; 
-        } else { stack[0] = 0; displayValue = "0"; }
+        if (prefix === 'f') { stack = [0,0,0,0]; tvm = {n:0,i:0,pv:0,pmt:0,fv:0}; prefix = null; }
+        else { stack[0] = 0; displayValue = "0"; }
         isNewInput = true; updateLCD();
     }
 
-    function toggleSign() { playClick(); stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
-    function pressDot() { playClick(); if(!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue.replace('.', ','); }
+    function toggleTheme() { body.classList.toggle('light-mode'); }
+    function setPrefix(p) { prefix = (prefix === p) ? null : p; updateLCD(); }
+    function toggleSign() { stack[0] *= -1; displayValue = stack[0].toString(); updateLCD(); }
+    function pressDot() { if(!displayValue.includes('.')) displayValue += '.'; mainDisp.innerText = displayValue.replace('.', ','); }
     function resetAll() { location.reload(); }
-    function toggleFullScreen() { playClick(); if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-    
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
+    function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 </script>
 </body>
 </html>
