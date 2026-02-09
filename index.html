@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HP 12c Platinum - Geometria Final</title>
+    <title>HP 12c Platinum - Geometria Perfeita</title>
     <style>
         :root {
             --bg: #1a1a1a; --case: #2c2c2c; --gold: #c5a059; --lcd-bg: #9ead94;
@@ -13,49 +13,51 @@
         body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: Arial, sans-serif; }
         
         .hp12c {
-            background: var(--case); width: 620px; padding: 60px 20px 40px; 
+            background: var(--case); width: 620px; padding: 50px 15px 40px; 
             border-radius: 12px; position: relative; box-sizing: border-box;
             box-shadow: 0 30px 60px rgba(0,0,0,0.8);
         }
 
-        .lcd-frame { background: #000; padding: 4px; border-radius: 4px; margin-bottom: 50px; }
-        .lcd { background: var(--lcd-bg); height: 80px; padding: 10px; border: 2px solid #333; text-align: right; }
-        #main-display { font-size: 44px; font-family: 'Courier New', monospace; font-weight: bold; }
+        .lcd-frame { background: #000; padding: 4px; border-radius: 4px; margin-bottom: 45px; }
+        .lcd { background: var(--lcd-bg); height: 75px; padding: 10px; border: 2px solid #333; text-align: right; box-sizing: border-box; }
+        #main-display { font-size: 40px; font-family: 'Courier New', monospace; font-weight: bold; color: #1a1d18; }
 
-        /* GRID RÍGIDO DE 10 COLUNAS */
+        /* GRID DE 10 COLUNAS IGUAIS */
         .keypad { 
             display: grid; 
-            grid-template-columns: repeat(10, 52px); /* Tamanho fixo para garantir o quadrado */
-            grid-template-rows: repeat(4, 45px);     /* Altura fixa */
-            gap: 35px 8px; /* Espaço vertical maior para as etiquetas */
-            justify-content: center;
+            grid-template-columns: repeat(10, 1fr); 
+            grid-template-rows: repeat(4, 42px);
+            gap: 38px 8px; /* Espaço generoso para etiquetas não sobreporem */
         }
 
-        .btn-container { position: relative; width: 52px; height: 45px; }
+        .btn-container { position: relative; width: 100%; height: 42px; display: flex; justify-content: center; }
 
         .btn { 
             width: 100%; height: 100%; border-radius: 4px; color: #fff; 
             font-size: 11px; font-weight: bold; background: var(--btn-black); 
             border: 1px solid #000; cursor: pointer; box-shadow: 0 3px 0 #000;
+            position: relative; z-index: 2;
         }
+        .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
 
-        /* POSICIONAMENTO ABSOLUTO PARA NÃO MOVER OS BOTÕES */
-        .label-f { position: absolute; top: -16px; left: 0; width: 100%; text-align: center; color: var(--btn-orange); font-size: 8px; font-weight: bold; }
-        .label-g { position: absolute; bottom: -16px; left: 0; width: 100%; text-align: center; color: var(--btn-blue); font-size: 8px; font-weight: bold; }
-        .label-w { position: absolute; top: -26px; left: 0; width: 100%; text-align: center; color: #fff; font-size: 8px; opacity: 0.6; }
+        /* ETIQUETAS FLUTUANTES (Não ocupam espaço) */
+        .label-f { position: absolute; top: -18px; color: var(--btn-orange); font-size: 8px; font-weight: bold; white-space: nowrap; z-index: 1; }
+        .label-g { position: absolute; bottom: -18px; color: var(--btn-blue); font-size: 8px; font-weight: bold; white-space: nowrap; z-index: 1; }
+        .label-w { position: absolute; top: -28px; color: #fff; font-size: 8px; opacity: 0.6; white-space: nowrap; z-index: 1; }
 
         .btn-f { background: var(--btn-orange) !important; color: #000 !important; }
         .btn-g { background: var(--btn-blue) !important; color: #fff !important; }
         
-        /* ENTER - COLUNA 5, LINHAS 3 E 4 */
+        /* ENTER - AJUSTADO PARA NÃO TRANSBORDAR */
         .btn-enter { 
-            grid-column: 5; grid-row: 3 / 5; 
-            height: calc(100% * 2 + 35px) !important; 
-            background: #555 !important; z-index: 5;
+            grid-column: 5; 
+            grid-row: 3 / 5; 
+            height: calc(100% * 2 + 38px) !important; /* Soma das 2 linhas + o gap */
+            background: #555 !important;
+            align-self: start;
         }
 
-        /* BLOCO NUMÉRICO - COLUNAS 7, 8, 9 */
-        .col7 { grid-column: 7; } .col8 { grid-column: 8; } .col9 { grid-column: 9; } .col10 { grid-column: 10; }
+        /* BLOCO NUMÉRICO ALINHADO (7,8,9 nas colunas 7,8,9) */
     </style>
 </head>
 <body>
@@ -72,10 +74,10 @@
         <div class="btn-container"><span class="label-f">IRR</span><button class="btn">PMT</button><span class="label-g">CFj</span></div>
         <div class="btn-container"><button class="btn">FV</button><span class="label-g">Nj</span></div>
         <div class="btn-container"><span class="label-f">DATE</span><button class="btn">CHS</button><span class="label-g">BEG</span></div>
-        <div class="btn-container col7"><button class="btn">7</button></div>
-        <div class="btn-container col8"><button class="btn">8</button></div>
-        <div class="btn-container col9"><button class="btn">9</button></div>
-        <div class="btn-container col10"><button class="btn">÷</button></div>
+        <div class="btn-container"><button class="btn">7</button></div>
+        <div class="btn-container"><button class="btn">8</button></div>
+        <div class="btn-container"><button class="btn">9</button></div>
+        <div class="btn-container"><button class="btn">÷</button></div>
 
         <div class="btn-container"><span class="label-w">P/R</span><button class="btn">R/S</button><span class="label-g">PSE</span></div>
         <div class="btn-container"><span class="label-w">BST</span><button class="btn">SST</button><span class="label-g">GTO</span></div>
@@ -83,30 +85,30 @@
         <div class="btn-container"><button class="btn">x<>y</button><span class="label-g">x=0</span></div>
         <div class="btn-container"><button class="btn">%T</button></div>
         <div class="btn-container"><span class="label-f">REG</span><button class="btn">CLX</button><span class="label-g">FIN</span></div>
-        <div class="btn-container col7"><button class="btn">4</button></div>
-        <div class="btn-container col8"><button class="btn">5</button></div>
-        <div class="btn-container col9"><button class="btn">6</button></div>
-        <div class="btn-container col10"><button class="btn">×</button></div>
+        <div class="btn-container"><button class="btn">4</button></div>
+        <div class="btn-container"><button class="btn">5</button></div>
+        <div class="btn-container"><button class="btn">6</button></div>
+        <div class="btn-container"><button class="btn">×</button></div>
 
         <div class="btn-container"><button class="btn">y<sup>x</sup></button><span class="label-g">√x</span></div>
         <div class="btn-container"><button class="btn">1/x</button><span class="label-g">e<sup>x</sup></span></div>
         <div class="btn-container"><button class="btn">Δ%</button><span class="label-g">LN</span></div>
         <div class="btn-container"><button class="btn">%</button><span class="label-g">LOG</span></div>
         <button class="btn btn-enter">ENTER</button>
-        <div class="btn-container col6" style="grid-column: 6;"><button class="btn">1</button><span class="label-g">x̄</span></div>
-        <div class="btn-container col7"><button class="btn">2</button><span class="label-g">s</span></div>
-        <div class="btn-container col8"><button class="btn">3</button><span class="label-g">n!</span></div>
-        <div class="btn-container col9"><button class="btn">-</button></div>
-        <div class="btn-container col10"><span class="label-f">x̄w</span><button class="btn">Σ+</button><span class="label-g">Σ-</span></div>
+        <div class="btn-container"><button class="btn">1</button><span class="label-g">x̄</span></div>
+        <div class="btn-container"><button class="btn">2</button><span class="label-g">s</span></div>
+        <div class="btn-container"><button class="btn">3</button><span class="label-g">n!</span></div>
+        <div class="btn-container"><button class="btn">-</button></div>
+        <div class="btn-container"><span class="label-f">x̄w</span><button class="btn">Σ+</button><span class="label-g">Σ-</span></div>
 
         <div class="btn-container" style="grid-column: 1 / span 2;"><button class="btn">ON</button></div>
-        <div class="btn-container col3"><button class="btn btn-f">f</button></div>
-        <div class="btn-container col4"><button class="btn btn-g">g</button></div>
-        <div class="btn-container col6"><button class="btn">STO</button></div>
-        <div class="btn-container col7"><button class="btn">RCL</button></div>
-        <div class="btn-container col8"><button class="btn">0</button></div>
-        <div class="btn-container col9"><button class="btn">.</button></div>
-        <div class="btn-container col10"><button class="btn">+</button></div>
+        <div class="btn-container"><button class="btn btn-f">f</button></div>
+        <div class="btn-container"><button class="btn btn-g">g</button></div>
+        <div class="btn-container" style="grid-column: 6;"><button class="btn">STO</button></div>
+        <div class="btn-container" style="grid-column: 7;"><button class="btn">RCL</button></div>
+        <div class="btn-container" style="grid-column: 8;"><button class="btn">0</button></div>
+        <div class="btn-container" style="grid-column: 9;"><button class="btn">.</button></div>
+        <div class="btn-container" style="grid-column: 10;"><button class="btn">+</button></div>
     </div>
 </div>
 
