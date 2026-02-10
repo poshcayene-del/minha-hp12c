@@ -2,12 +2,12 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>HP-12C Web (Corrigida)</title>
+<title>HP-12C Web – Corrigida</title>
 
 <style>
 body{
   background:#1b1b1b;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:Arial, Helvetica, sans-serif;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -22,17 +22,16 @@ body{
 }
 .display{
   background:#c9d1b8;
-  color:#000;
+  font-family:"Courier New", monospace;
   font-size:26px;
-  text-align:right;
   padding:12px;
+  text-align:right;
   border-radius:6px;
   margin-bottom:10px;
-  font-family:"Courier New", monospace;
 }
 .keys{
   display:grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns:repeat(5,1fr);
   gap:6px;
 }
 button{
@@ -40,14 +39,14 @@ button{
   font-size:13px;
   border:none;
   border-radius:6px;
-  cursor:pointer;
   background:#2b2b2b;
   color:#fff;
+  cursor:pointer;
 }
-button.yellow{ background:#d4a017; color:#000; }
-button.blue{ background:#1e3a5f; }
-button.gray{ background:#555; }
-button:active{ transform:scale(0.97); }
+button.yellow{background:#d4a017;color:#000;}
+button.blue{background:#1e3a5f;}
+button.gray{background:#555;}
+button:active{transform:scale(0.97);}
 </style>
 </head>
 
@@ -57,8 +56,8 @@ button:active{ transform:scale(0.97); }
   <div id="display" class="display">0.00</div>
 
   <div class="keys">
-    <button class="yellow" onclick="setMode('f')">f</button>
-    <button class="blue" onclick="setMode('g')">g</button>
+    <button class="yellow">f</button>
+    <button class="blue">g</button>
     <button onclick="chs()">CHS</button>
     <button onclick="clx()">CLX</button>
     <button onclick="clearAll()">CLR</button>
@@ -66,19 +65,19 @@ button:active{ transform:scale(0.97); }
     <button onclick="num(7)">7</button>
     <button onclick="num(8)">8</button>
     <button onclick="num(9)">9</button>
-    <button onclick="storeTVM('n')">n</button>
-    <button onclick="storeTVM('i')">i</button>
+    <button onclick="store('n')">n</button>
+    <button onclick="store('i')">i</button>
 
     <button onclick="num(4)">4</button>
     <button onclick="num(5)">5</button>
     <button onclick="num(6)">6</button>
-    <button onclick="storeTVM('pv')">PV</button>
-    <button onclick="storeTVM('pmt')">PMT</button>
+    <button onclick="store('pv')">PV</button>
+    <button onclick="store('pmt')">PMT</button>
 
     <button onclick="num(1)">1</button>
     <button onclick="num(2)">2</button>
     <button onclick="num(3)">3</button>
-    <button onclick="storeTVM('fv')">FV</button>
+    <button onclick="store('fv')">FV</button>
     <button onclick="calcIRR()">IRR</button>
 
     <button onclick="num(0)">0</button>
@@ -90,77 +89,71 @@ button:active{ transform:scale(0.97); }
 </div>
 
 <script>
-let display = document.getElementById("display");
+let display=document.getElementById("display");
 
 // ---------- RPN ----------
-let stack = [0,0,0,0];
-let buffer = "";
-let typing = false;
+let stack=[0,0,0,0];
+let buffer="";
+let typing=false;
 
 // ---------- TVM ----------
-let tvm = { n:0, i:0, pv:0, pmt:0, fv:0 };
+let tvm={n:null,i:null,pv:null,pmt:null,fv:null};
 
 // ---------- CASH FLOW ----------
-let CF0 = null;
-let CF = [];
+let CF0=null;
+let CF=[];
 
 // ---------- DISPLAY ----------
 function refresh(){
-  display.innerText = stack[0].toFixed(2);
+  display.innerText=stack[0].toFixed(2);
 }
 
 // ---------- INPUT ----------
 function num(n){
-  buffer += n;
-  typing = true;
-  display.innerText = buffer;
+  buffer+=n;
+  typing=true;
+  display.innerText=buffer;
 }
 function dot(){
-  if(!buffer.includes(".")) buffer += ".";
-  display.innerText = buffer;
+  if(!buffer.includes(".")) buffer+=".";
+  display.innerText=buffer;
 }
 function enter(){
-  let v = typing ? parseFloat(buffer) : stack[0];
-  stack = [v, stack[0], stack[1], stack[2]];
-  buffer="";
-  typing=false;
-  refresh();
-}
-
-// ---------- BASIC ----------
-function chs(){ stack[0]*=-1; refresh(); }
-function clx(){ stack[0]=0; refresh(); }
-function clearAll(){
-  stack=[0,0,0,0];
-  tvm={n:0,i:0,pv:0,pmt:0,fv:0};
-  CF0=null; CF=[];
+  let v=typing?parseFloat(buffer):stack[0];
+  stack=[v,stack[0],stack[1],stack[2]];
   buffer=""; typing=false;
   refresh();
 }
 
+// ---------- BASIC ----------
+function chs(){stack[0]*=-1;refresh();}
+function clx(){stack[0]=0;refresh();}
+function clearAll(){
+  stack=[0,0,0,0];
+  buffer=""; typing=false;
+  tvm={n:null,i:null,pv:null,pmt:null,fv:null};
+  CF0=null; CF=[];
+  refresh();
+}
+
 // ---------- TVM ----------
-function storeTVM(k){
+function store(k){
   if(typing) enter();
-  if(stack[0]!==0){
-    tvm[k]=stack[0];
-    return;
-  }
+  tvm[k]=stack[0];
 
-  let n=tvm.n;
-  let r=tvm.i/100;
-  let pv=tvm.pv;
-  let pmt=tvm.pmt;
-  let fv=tvm.fv;
+  let {n,i,pv,pmt,fv}=tvm;
+  if(n==null||i==null) return;
 
+  let r=i/100;
   let f=Math.pow(1+r,n);
 
-  if(k==="fv"){
+  if(k==="fv" && pv!=null && pmt!=null){
     stack[0]=-(pv*f + pmt*(f-1)/r);
   }
-  if(k==="pv"){
+  if(k==="pv" && fv!=null && pmt!=null){
     stack[0]=-(fv + pmt*(f-1)/r)/f;
   }
-  if(k==="pmt"){
+  if(k==="pmt" && pv!=null && fv!=null){
     stack[0]=-(pv*r)/(1-Math.pow(1+r,-n));
   }
   refresh();
@@ -169,15 +162,12 @@ function storeTVM(k){
 // ---------- CASH FLOW ----------
 function addCF(){
   if(typing) enter();
-  if(CF0===null){
-    CF0=stack[0];
-  }else{
-    CF.push(stack[0]);
-  }
+  if(CF0===null) CF0=stack[0];
+  else CF.push(stack[0]);
 }
 
 function calcNPV(){
-  if(CF0===null || CF.length===0) return;
+  if(CF0===null||CF.length===0) return;
   let r=tvm.i/100;
   let npv=CF0;
   for(let t=0;t<CF.length;t++){
@@ -188,7 +178,20 @@ function calcNPV(){
 }
 
 function calcIRR(){
-  if(CF0===null || CF.length===0) return;
+  if(CF0===null||CF.length===0) return;
+
+  // valida alternância de sinal
+  let hasPos=false, hasNeg=false;
+  [CF0,...CF].forEach(v=>{
+    if(v>0) hasPos=true;
+    if(v<0) hasNeg=true;
+  });
+  if(!(hasPos&&hasNeg)){
+    stack[0]=0;
+    refresh();
+    return;
+  }
+
   let rate=0.1;
   for(let i=0;i<100;i++){
     let npv=CF0, dnpv=0;
@@ -197,6 +200,7 @@ function calcIRR(){
       npv+=CF[t]/df;
       dnpv+=-(t+1)*CF[t]/(df*(1+rate));
     }
+    if(Math.abs(dnpv)<1e-10) break;
     rate-=npv/dnpv;
   }
   stack[0]=rate*100;
