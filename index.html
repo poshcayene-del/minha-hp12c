@@ -2,212 +2,232 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Calculadora Financeira</title>
-<link rel="stylesheet" href="style.css">
+<title>HP-12C Web</title>
+
+<style>
+body{
+  background:#1b1b1b;
+  font-family: Arial, Helvetica, sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.calc{
+  background:#3a2f1f;
+  padding:18px;
+  border-radius:12px;
+  width:330px;
+  box-shadow:0 0 25px #000;
+}
+
+.display{
+  background:#c9d1b8;
+  color:#000;
+  font-size:26px;
+  text-align:right;
+  padding:12px;
+  border-radius:6px;
+  margin-bottom:10px;
+  font-family:"Courier New", monospace;
+}
+
+.keys{
+  display:grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap:6px;
+}
+
+button{
+  padding:12px 6px;
+  font-size:13px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  background:#2b2b2b;
+  color:#fff;
+}
+
+button.yellow{ background:#d4a017; color:#000; }
+button.blue{ background:#1e3a5f; }
+button.gray{ background:#555; }
+
+button:active{ transform:scale(0.97); }
+</style>
 </head>
+
 <body>
 
 <div class="calc">
-  <div id="display">0</div>
+  <div id="display" class="display">0.00</div>
 
   <div class="keys">
+    <button class="yellow" onclick="setMode('f')">f</button>
+    <button class="blue" onclick="setMode('g')">g</button>
+    <button onclick="chs()">CHS</button>
+    <button onclick="clx()">CLX</button>
+    <button onclick="clrAll()">CLR</button>
+
     <button onclick="num(7)">7</button>
     <button onclick="num(8)">8</button>
     <button onclick="num(9)">9</button>
     <button onclick="pressTVM('n')">n</button>
+    <button onclick="pressTVM('i')">i</button>
 
     <button onclick="num(4)">4</button>
     <button onclick="num(5)">5</button>
     <button onclick="num(6)">6</button>
-    <button onclick="pressTVM('i')">i</button>
+    <button onclick="pressTVM('pv')">PV</button>
+    <button onclick="pressTVM('pmt')">PMT</button>
 
     <button onclick="num(1)">1</button>
     <button onclick="num(2)">2</button>
     <button onclick="num(3)">3</button>
-    <button onclick="pressTVM('pv')">PV</button>
+    <button onclick="pressTVM('fv')">FV</button>
+    <button onclick="calcIRR()">IRR</button>
 
     <button onclick="num(0)">0</button>
     <button onclick="dot()">.</button>
-    <button onclick="enter()">ENTER</button>
-    <button onclick="pressTVM('pmt')">PMT</button>
-
-    <button onclick="pressTVM('fv')">FV</button>
-    <button onclick="clr()">C</button>
-    <button onclick="calcIRR()">IRR</button>
+    <button class="gray" onclick="enter()">ENTER</button>
+    <button onclick="calcNPV()">NPV</button>
+    <button onclick="addCF()">CFj</button>
   </div>
 </div>
 
-<script src="script.js"></script>
-</body>
-</html>
-body {
-  background: #222;
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.calc {
-  background: #111;
-  padding: 20px;
-  border-radius: 10px;
-  width: 280px;
-}
-
-#display {
-  background: #000;
-  color: #0f0;
-  font-size: 24px;
-  text-align: right;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
-.keys {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-
-button {
-  padding: 15px;
-  font-size: 14px;
-  border: none;
-  border-radius: 5px;
-  background: #333;
-  color: #fff;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #555;
-}
+<script>
 let display = document.getElementById("display");
 
+// ---------- RPN ----------
+let stack = [0,0,0,0];
 let buffer = "";
-let isTyping = false;
+let typing = false;
+let mode = null;
 
-let stack = [0];
+// ---------- TVM ----------
+let tvm = { n:0, i:0, pv:0, pmt:0, fv:0 };
 
-let tvm = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
+// ---------- CASH FLOW ----------
+let cf = [];
 
-let cf = { flows: [] };
-
-// ---------- UTIL ----------
-function safe(v) {
-  return Number.isFinite(v) ? v : 0;
-}
-
-function update() {
+// ---------- DISPLAY ----------
+function refresh(){
   display.innerText = stack[0].toFixed(2);
 }
 
 // ---------- INPUT ----------
-function num(n) {
+function num(n){
   buffer += n;
-  isTyping = true;
+  typing = true;
   display.innerText = buffer;
 }
 
-function dot() {
-  if (!buffer.includes(".")) buffer += ".";
+function dot(){
+  if(!buffer.includes(".")) buffer += ".";
   display.innerText = buffer;
 }
 
-function enter() {
-  stack[0] = parseFloat(buffer) || 0;
-  buffer = "";
-  isTyping = false;
-  update();
+function enter(){
+  if(typing){
+    push(parseFloat(buffer) || 0);
+    buffer = "";
+    typing = false;
+  } else {
+    push(stack[0]);
+  }
+  refresh();
 }
 
-function clr() {
-  buffer = "";
+function push(v){
+  stack = [v, stack[0], stack[1], stack[2]];
+}
+
+function pop(){
+  let x = stack[0];
+  stack = [stack[1], stack[2], stack[3], 0];
+  return x;
+}
+
+// ---------- FUNÇÕES ----------
+function chs(){
+  stack[0] = -stack[0];
+  refresh();
+}
+
+function clx(){
   stack[0] = 0;
-  tvm = { n: 0, i: 0, pv: 0, pmt: 0, fv: 0 };
-  cf.flows = [];
-  update();
+  refresh();
+}
+
+function clrAll(){
+  stack = [0,0,0,0];
+  tvm = { n:0, i:0, pv:0, pmt:0, fv:0 };
+  cf = [];
+  buffer="";
+  typing=false;
+  refresh();
+}
+
+function setMode(m){
+  mode = m;
 }
 
 // ---------- TVM ----------
-function pressTVM(k) {
-  if (isTyping) enter();
+function pressTVM(k){
+  if(typing) enter();
 
-  if (stack[0] !== 0) {
-    tvm[k] = stack[0];
-    update();
+  if(stack[0] !== 0){
+    tvm[k] = pop();
+    refresh();
     return;
   }
 
-  let { n, i, pv, pmt, fv } = tvm;
+  let {n,i,pv,pmt,fv} = tvm;
   let r = i / 100;
+  let f = Math.pow(1+r, n);
+  let fact = r === 0 ? n : (f-1)/r;
 
-  let f = Math.pow(1 + r, n);
-  let factor = r === 0 ? n : (f - 1) / r;
-
-  switch (k) {
-    case "fv":
-      stack[0] = safe(pv * f + pmt * factor);
-      break;
-
-    case "pv":
-      stack[0] = safe((fv - pmt * factor) / f);
-      break;
-
-    case "pmt":
-      stack[0] = safe((fv - pv * f) / factor);
-      break;
-
-    case "i":
-      let guess = 0.1;
-      for (let j = 0; j < 40; j++) {
-        let fval = pv * Math.pow(1 + guess, n)
-          + pmt * ((Math.pow(1 + guess, n) - 1) / guess)
-          - fv;
-
-        let dval = n * pv * Math.pow(1 + guess, n - 1)
-          + pmt * (
-            (n * Math.pow(1 + guess, n - 1) * guess -
-            (Math.pow(1 + guess, n) - 1)) /
-            (guess * guess)
-          );
-
-        guess -= fval / (dval || 1e-8);
-      }
-      stack[0] = tvm.i = safe(guess * 100);
-      update();
-      return;
+  switch(k){
+    case "fv": stack[0] = pv*f + pmt*fact; break;
+    case "pv": stack[0] = (fv - pmt*fact)/f; break;
+    case "pmt": stack[0] = (fv - pv*f)/fact; break;
   }
-
-  update();
+  refresh();
 }
 
-// ---------- IRR ----------
-function calcIRR() {
-  if (isTyping) enter();
+// ---------- CASH FLOW ----------
+function addCF(){
+  if(typing) enter();
+  cf.push(stack[0]);
+}
 
-  cf.flows.push(stack[0]);
+function calcNPV(){
+  if(cf.length < 2) return;
+  let rate = tvm.i/100;
+  let npv = 0;
+  for(let t=0;t<cf.length;t++){
+    npv += cf[t]/Math.pow(1+rate,t);
+  }
+  stack[0]=npv;
+  refresh();
+}
 
-  if (cf.flows.length < 2) return;
-
+function calcIRR(){
+  if(cf.length < 2) return;
   let rate = 0.1;
-
-  for (let i = 0; i < 50; i++) {
-    let npv = 0;
-    let dnpv = 0;
-
-    for (let t = 0; t < cf.flows.length; t++) {
-      let df = Math.pow(1 + rate, t);
-      npv += cf.flows[t] / df;
-      dnpv += -t * cf.flows[t] / (df * (1 + rate));
+  for(let i=0;i<50;i++){
+    let npv=0,dnpv=0;
+    for(let t=0;t<cf.length;t++){
+      let df=Math.pow(1+rate,t);
+      npv+=cf[t]/df;
+      dnpv+=-t*cf[t]/(df*(1+rate));
     }
-
-    rate -= npv / (dnpv || 1e-8);
+    rate-=npv/(dnpv||1e-8);
   }
-
-  stack[0] = safe(rate * 100);
-  update();
+  stack[0]=rate*100;
+  refresh();
 }
+</script>
+
+</body>
+</html>
