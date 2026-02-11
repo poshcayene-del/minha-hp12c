@@ -6,73 +6,53 @@
     <meta name="theme-color" content="#1a1a1a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HP 12c CS">
     <title>HP 12c Platinum - Cláudio Santos Ed.</title>
     
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4341/4341069.png">
-
-    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"HP 12c CS Edition","short_name":"HP 12c CS","start_url":".","display":"standalone","background_color":"#1a1a1a","theme_color":"#1a1a1a","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/4341/4341069.png","sizes":"512x512","type":"image/png"}]}'>
+    <link rel="apple-touch-icon" href="https://i.imgur.com/8N6qWpX.png">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/8N6qWpX.png">
 
     <style>
-        /* Reseta e previne highlights no toque */
+        /* CSS ORIGINAL PRESERVADO E AJUSTADO PARA ENQUADRAMENTO */
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
-        /* Centraliza a calculadora na tela */
         body { background: #b3b3b3; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; font-family: 'Segoe UI', Arial, sans-serif; }
         
-        /* Botão de Instalação (aparece só no Android via Chrome) */
-        #installBtn { display: none; position: absolute; top: 10px; left: 10px; background: #d68a00; color: #000; border: none; padding: 8px 15px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-
-        /* Estrutura Principal da Calculadora */
         .hp12c { background: #1a1a1a; width: 780px; padding: 40px 25px 120px 25px; border-radius: 12px; box-shadow: 0 40px 80px rgba(0,0,0,0.8); border: 3px solid #000; position: relative; }
         .faceplate { background: linear-gradient(180deg, #e0e0e0 0%, #bbbbbb 100%); border-radius: 6px; padding: 20px 20px 45px 20px; border: 1px solid #777; }
 
-        /* Área dos Visores (LCD + Pilha) */
         .display-area { display: flex; gap: 15px; align-items: flex-end; margin-bottom: 30px; }
         .lcd-container { background: #000; padding: 5px; border-radius: 4px; width: 320px; flex-shrink: 0; }
         .lcd { background: #9ead94; height: 75px; padding: 10px; text-align: right; border: 2px solid #333; box-shadow: inset 0 0 15px rgba(0,0,0,0.2); }
         #display { font-size: 38px; font-family: 'Courier New', monospace; font-weight: bold; color: #1a1d18; }
         .indicators { font-size: 11px; color: #1a1d18; height: 12px; font-weight: bold; text-align: left; }
         
-        /* Monitor da Pilha Lateral */
         .stack-viewer { background: #222; border: 2px solid #444; border-radius: 4px; padding: 5px 8px; width: 140px; height: 75px; display: flex; flex-direction: column; justify-content: space-between; font-family: 'Courier New', monospace; font-size: 11px; color: #9ead94; margin-bottom: 5px; }
         .stack-line { display: flex; justify-content: space-between; border-bottom: 1px solid #333; }
         .reg-label { color: #d68a00; font-weight: bold; }
 
-        /* Estilos do Logo e Assinatura */
         .logo { position: absolute; top: 35px; right: 40px; text-align: right; }
         .logo h1 { margin: 0; font-size: 24px; font-style: italic; color: #222; line-height: 1; }
-        .model-name { display: block; font-size: 14px; color: #444; margin-top: 2px; }
-        .signature {
-            display: block;
-            font-family: 'Brush Script MT', cursive; /* Fonte cursiva para assinatura */
-            font-size: 17px; /* Tamanho ajustado para equilibrar com o 'platinum' */
-            color: #222;
-            margin-top: 4px;
-        }
+        .signature { display: block; font-family: 'Brush Script MT', cursive; font-size: 17px; color: #222; margin-top: 4px; }
 
-        /* Grid do Teclado */
-        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(4, 44px); gap: 35px 12px; margin-top: 10px; }
-        .btn-cell { position: relative; width: 100%; height: 100%; }
-        /* Estilo dos Botões */
-        .btn { width: 100%; height: 100%; border-radius: 4px; color: #fff; font-size: 13px; font-weight: bold; background: linear-gradient(180deg, #444 0%, #111 100%); border: none; border-bottom: 4px solid #000; cursor: pointer; position: relative; z-index: 2; transition: transform 0.05s; }
+        .keypad { display: grid; grid-template-columns: repeat(10, 62px); gap: 35px 12px; margin-top: 10px; justify-content: center; }
+        .btn-cell { position: relative; width: 62px; height: 44px; }
+        .btn { width: 100%; height: 100%; border-radius: 4px; color: #fff; font-size: 13px; font-weight: bold; background: linear-gradient(180deg, #444 0%, #111 100%); border: none; border-bottom: 4px solid #000; cursor: pointer; position: relative; z-index: 2; }
         .btn:active { transform: translateY(2px); border-bottom: 2px solid #000; }
-        /* Cores dos Botões Especiais */
         .btn-f { background: #d68a00 !important; color: #000 !important; }
         .btn-g { background: #0099cc !important; }
-        .btn-enter { grid-column: 6; grid-row: 3 / 5; height: 100% !important; background: #555 !important; }
-        /* Rótulos f (laranja) e g (azul) */
-        .lbl-f { position: absolute; top: -18px; width: 100%; text-align: center; color: #d68a00; font-size: 10px; font-weight: 800; pointer-events: none; }
-        .lbl-g { position: absolute; top: 48px; left: 0; width: 100%; text-align: center; color: #0099cc; font-size: 10px; font-weight: 800; pointer-events: none; }
+        .btn-enter { grid-column: 6; grid-row: 3 / 5; height: 123px !important; background: #555 !important; }
+        
+        .lbl-f { position: absolute; top: -18px; left: 0; width: 100%; text-align: center; color: #d68a00; font-size: 10px; font-weight: 800; white-space: nowrap; }
+        .lbl-g { position: absolute; bottom: -18px; left: 0; width: 100%; text-align: center; color: #0099cc; font-size: 10px; font-weight: 800; white-space: nowrap; }
     </style>
 </head>
 <body>
-
-<button id="installBtn" onclick="installApp()">📲 Instalar App HP 12c CS</button>
 
 <div class="hp12c">
     <div class="faceplate">
         <div class="logo">
             <h1>hp 12c</h1>
-            <span class="model-name">platinum</span>
+            <span style="font-size:14px; color:#444">platinum</span>
             <span class="signature">Cláudio Santos</span>
         </div>
         
@@ -98,30 +78,33 @@
             <div class="btn-cell"><span class="lbl-f">IRR</span><button class="btn" onclick="pressTVM('pmt')">PMT</button><span class="lbl-g">CFj</span></div>
             <div class="btn-cell"><button class="btn" onclick="pressTVM('fv')">FV</button><span class="lbl-g">Nj</span></div>
             <div class="btn-cell"><span class="lbl-f">DATE</span><button class="btn" onclick="pressOp('chs')">CHS</button><span class="lbl-g">BEG</span></div>
-            <div class="btn-cell"><button class="btn" onclick="pressNum(7)">7</button></div>
-            <div class="btn-cell"><button class="btn" onclick="pressNum(8)">8</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(7)">7</button><span class="lbl-g">D.MY</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(8)">8</button><span class="lbl-g">M.DY</span></div>
             <div class="btn-cell"><button class="btn" onclick="pressNum(9)">9</button></div>
             <div class="btn-cell"><button class="btn" onclick="pressOp('/')">÷</button></div>
+            
             <div class="btn-cell"><button class="btn" onclick="pressOp('yx')">y<sup>x</sup></button><span class="lbl-g">√x</span></div>
             <div class="btn-cell"><button class="btn" onclick="pressOp('1x')">1/x</button><span class="lbl-g">e<sup>x</sup></span></div>
             <div class="btn-cell"><button class="btn" onclick="pressOp('%t')">%T</button><span class="lbl-g">LN</span></div>
             <div class="btn-cell"><button class="btn" onclick="pressOp('delta%')">Δ%</button><span class="lbl-g">FRAC</span></div>
             <div class="btn-cell"><button class="btn" onclick="pressOp('%')">%</button><span class="lbl-g">INTg</span></div>
-            <div class="btn-cell"><button class="btn" onclick="pressOp('eex')">EEX</button><span class="lbl-g">ODD</span></div>
-            <div class="btn-cell"><button class="btn" onclick="pressNum(4)">4</button></div>
-            <div class="btn-cell"><button class="btn" onclick="pressNum(5)">5</button></div>
-            <div class="btn-cell"><button class="btn" onclick="pressNum(6)">6</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('eex')">EEX</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(4)">4</button><span class="lbl-g">x̄w</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(5)">5</button><span class="lbl-g">ŷ</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressNum(6)">6</button><span class="lbl-g">r</span></div>
             <div class="btn-cell"><button class="btn" onclick="pressOp('*')">×</button></div>
-            <div class="btn-cell"><button class="btn">R/S</button></div>
-            <div class="btn-cell"><button class="btn">SST</button></div>
+            
+            <div class="btn-cell"><button class="btn" onclick="pressOp('rs')">R/S</button></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('sst')">SST</button></div>
             <div class="btn-cell"><button class="btn" onclick="pressOp('rol')">R↓</button></div>
-            <div class="btn-cell"><button class="btn" onclick="pressOp('xy')">x<>y</button></div>
-            <div class="btn-cell"><span class="lbl-f">REG</span><button class="btn" onclick="pressOp('clx')">CLX</button><span class="lbl-g">FIN</span></div>
+            <div class="btn-cell"><button class="btn" onclick="pressOp('xy')">x<>y</button><span class="lbl-g">LSTx</span></div>
+            <div class="btn-cell"><span class="lbl-f">REG</span><button class="btn" onclick="pressOp('clx')">CLX</button></div>
             <button class="btn btn-enter" onclick="pressEnter()">ENTER</button>
             <div class="btn-cell"><button class="btn" onclick="pressNum(1)">1</button><span class="lbl-g">x̄</span></div>
             <div class="btn-cell"><button class="btn" onclick="pressNum(2)">2</button><span class="lbl-g">s</span></div>
             <div class="btn-cell"><button class="btn" onclick="pressNum(3)">3</button><span class="lbl-g">n!</span></div>
             <div class="btn-cell"><button class="btn" onclick="pressOp('-')">-</button></div>
+            
             <div class="btn-cell"><button class="btn" onclick="resetCalc()">ON</button></div>
             <div class="btn-cell"><button class="btn btn-f" onclick="setMode('f')">f</button></div>
             <div class="btn-cell"><button class="btn btn-g" onclick="setMode('g')">g</button></div>
@@ -136,34 +119,14 @@
 </div>
 
 <script>
-    // Variáveis de Estado
-    let stack = [0,0,0,0], tvm = {n:0,i:0,pv:0,pmt:0,fv:0}, registers = Array(10).fill(0);
+    let stack = [0,0,0,0], tvm = {n:0,i:0,pv:0,pmt:0,fv:0}, registers = Array(10).fill(0), lastX = 0;
+    let stats = {n:0, sumX:0, sumX2:0, sumY:0, sumY2:0, sumXY:0};
     let buffer = "", mode = null, isTyping = false, lastOpWasEnter = false;
-    let deferredPrompt; // Para o instalador PWA
 
-    const displayEl = document.getElementById('display');
-    const installBtn = document.getElementById('installBtn');
-
-    // --- Lógica do Instalador PWA (Android/Chrome) ---
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault(); // Impede o banner padrão chato
-        deferredPrompt = e; // Salva o evento para usar no botão
-        installBtn.style.display = 'block'; // Mostra o nosso botão personalizado
-    });
-
-    async function installApp() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt(); // Chama o prompt nativo do sistema
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') installBtn.style.display = 'none'; // Esconde se aceitou
-            deferredPrompt = null;
-        }
-    }
-    // --------------------------------------------------
-
-    // Atualiza os visores (Principal e Pilha)
+    function format(v) { return v.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+    
     function updateLCD() {
-        displayEl.innerText = isTyping ? buffer.replace('.', ',') : format(stack[0]);
+        document.getElementById('display').innerText = isTyping ? buffer.replace('.', ',') : format(stack[0]);
         document.getElementById('regX').innerText = format(stack[0]);
         document.getElementById('regY').innerText = format(stack[1]);
         document.getElementById('regZ').innerText = format(stack[2]);
@@ -171,60 +134,106 @@
         document.getElementById('ind').innerText = mode ? mode.toUpperCase() : "";
     }
 
-    // Formatador Padrão PT-BR
-    function format(v) { return v.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
-    
-    // Movimentos da Pilha RPN
-    function lift() { stack[3] = stack[2]; stack[2] = stack[1]; stack[1] = stack[0]; }
-    function drop() { stack[1] = stack[2]; stack[2] = stack[3]; /* T é preservado na HP real */ }
+    function lift() { stack[3]=stack[2]; stack[2]=stack[1]; stack[1]=stack[0]; }
+    function drop() { stack[0]=stack[1]; stack[1]=stack[2]; stack[2]=stack[3]; }
 
-    // Digitação de Números
     function pressNum(v) {
         if (mode === 'sto' || mode === 'rcl') { handleMemory(v); return; }
+        if (mode === 'g') {
+            mode = null;
+            if (v === 1) { stack[0] = stats.n > 0 ? stats.sumX / stats.n : 0; updateLCD(); return; }
+            if (v === 2) { 
+                let varX = (stats.sumX2 - (stats.sumX**2)/stats.n) / (stats.n - 1);
+                stack[0] = stats.n > 1 ? Math.sqrt(varX) : 0; updateLCD(); return;
+            }
+            if (v === 3) {
+                let f = 1; for(let i=1; i<=Math.floor(stack[0]); i++) f *= i;
+                stack[0] = f; updateLCD(); return;
+            }
+        }
         if (!isTyping) { if (!lastOpWasEnter) lift(); buffer = v === '.' ? "0." : v.toString(); isTyping = true; lastOpWasEnter = false; }
         else { if (v === '.' && buffer.includes('.')) return; buffer += v.toString(); }
         stack[0] = parseFloat(buffer); updateLCD();
     }
 
-    // Tecla ENTER (O Coração do RPN)
     function pressEnter() { if (isTyping) { stack[0] = parseFloat(buffer); isTyping = false; } lift(); buffer = ""; lastOpWasEnter = true; updateLCD(); }
 
-    // Operações Matemáticas
     function pressOp(op) {
         if (isTyping) { stack[0] = parseFloat(buffer); isTyping = false; buffer = ""; }
+        lastX = stack[0];
         let x = stack[0], y = stack[1];
+
+        if (mode === 'f' && op === 'chs') {
+             let d = new Date(); d.setDate(d.getDate() + x);
+             alert("Data Projetada: " + d.toLocaleDateString('pt-BR')); mode = null; return;
+        }
+
+        if (mode === 'g') {
+            mode = null;
+            if (op === '+') {
+                let den = (stats.n * stats.sumX2 - stats.sumX * stats.sumX);
+                if (stats.n < 2 || den === 0) { stack[0] = 0; } 
+                else {
+                    let b = (stats.n * stats.sumXY - stats.sumX * stats.sumY) / den;
+                    let a = (stats.sumY - b * stats.sumX) / stats.n;
+                    stack[0] = a; lift(); stack[0] = b;
+                }
+                updateLCD(); return;
+            }
+            if (op === 'yx') { stack[0] = Math.sqrt(x); updateLCD(); return; }
+            if (op === '1x') { stack[0] = Math.exp(x); updateLCD(); return; }
+            if (op === 'xy') { lift(); stack[0] = lastX; updateLCD(); return; }
+        }
+
         if (op === '+') { stack[0] = y + x; drop(); }
         else if (op === '-') { stack[0] = y - x; drop(); }
         else if (op === '*') { stack[0] = y * x; drop(); }
-        else if (op === '/') { stack[0] = (x !== 0) ? y / x : 0; drop(); }
-        else if (op === 'chs') { stack[0] = -x; if(isTyping) buffer = stack[0].toString(); }
-        else if (op === 'clx') { if (mode === 'f') { stack.fill(0); } else { stack[0]=0; buffer=""; } }
-        else if (op === 'rol') { let t = stack[0]; stack[0]=stack[1]; stack[1]=stack[2]; stack[2]=stack[3]; stack[3]=t; }
+        else if (op === '/') { stack[0] = x !== 0 ? y / x : 0; drop(); }
+        else if (op === 'chs') { stack[0] = -x; }
+        else if (op === 'yx') { stack[0] = Math.pow(y, x); drop(); }
+        else if (op === '1x') { stack[0] = 1/x; }
+        else if (op === 'eex') { isTyping = true; buffer = stack[0].toString() + "e"; updateLCD(); return; }
+        else if (op === 'clx') { 
+            if(mode === 'f') { stats = {n:0, sumX:0, sumX2:0, sumY:0, sumY2:0, sumXY:0}; tvm={n:0,i:0,pv:0,pmt:0,fv:0}; }
+            stack[0] = 0; buffer = ""; 
+        }
+        else if (op === 'rol') { let t=stack[0]; stack[0]=stack[1]; stack[1]=stack[2]; stack[2]=stack[3]; stack[3]=t; }
         else if (op === 'xy') { stack[0]=y; stack[1]=x; }
+        else if (op === 'sigma') { 
+            stats.n++; stats.sumX += x; stats.sumY += y;
+            stats.sumX2 += x*x; stats.sumY2 += y*y; stats.sumXY += x*y;
+            stack[0] = stats.n; 
+        }
+        
         lastOpWasEnter = false; mode = null; updateLCD();
     }
 
-    // Motor Financeiro (TVM)
     function pressTVM(k) {
         if (isTyping) { stack[0] = parseFloat(buffer); isTyping = false; buffer = ""; }
-        if (stack[0] === 0) { // Calcular
-            const i=tvm.i/100, n=tvm.n, pv=tvm.pv, fv=tvm.fv, pmt=tvm.pmt;
+        if (mode === 'g' && k === 'n') { tvm.n = stack[0] * 12; stack[0] = 0; mode = null; updateLCD(); return; }
+        if (mode === 'g' && k === 'i') { tvm.i = stack[0] / 12; stack[0] = 0; mode = null; updateLCD(); return; }
+        
+        if (stack[0] === 0) {
+            let i=tvm.i/100, n=tvm.n, pv=tvm.pv, fv=tvm.fv, pmt=tvm.pmt;
             if (i!==0) {
                 let f = Math.pow(1+i, n);
                 if (k==='pmt') stack[0]=-(pv*i*f)/(f-1);
                 else if (k==='fv') stack[0]=-pv*f-pmt*((f-1)/i);
                 else if (k==='pv') stack[0]=(-fv-pmt*((f-1)/i))/f;
             }
-        } else { tvm[k] = stack[0]; stack[0] = 0; } // Armazenar
-        updateLCD();
+        } else { tvm[k] = stack[0]; stack[0] = 0; }
+        mode = null; updateLCD();
     }
 
-    // Memória e Modos
-    function handleMemory(v) { let i=parseInt(v); if(mode==='sto') registers[i]=stack[0]; else { lift(); stack[0]=registers[i]; } mode=null; updateLCD(); }
+    function handleMemory(v) {
+        let i = parseInt(v);
+        if (mode === 'sto') registers[i] = stack[0];
+        else { lift(); stack[0] = registers[i]; }
+        mode = null; updateLCD();
+    }
+
     function setMode(m) { mode = mode === m ? null : m; updateLCD(); }
-    function resetCalc() { stack.fill(0); tvm={n:0,i:0,pv:0,pmt:0,fv:0}; registers.fill(0); buffer=""; isTyping=false; mode=null; updateLCD(); }
-    
-    // Inicialização
+    function resetCalc() { stack.fill(0); stats = {n:0, sumX:0, sumX2:0, sumY:0, sumY2:0, sumXY:0}; buffer=""; isTyping=false; mode=null; updateLCD(); }
     updateLCD();
 </script>
 </body>
