@@ -2,77 +2,111 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=800, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1a1a1a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HP 12c Platinum - Cláudio Santos Ed.</title>
+    <title>HP 12c Platinum - Cláudio Santos</title>
     
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4341/4341069.png">
-
-    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"HP 12c CS Edition","short_name":"HP 12c CS","start_url":".","display":"standalone","background_color":"#1a1a1a","theme_color":"#1a1a1a","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/4341/4341069.png","sizes":"512x512","type":"image/png"}]}'>
+    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"HP 12c CS","short_name":"HP 12c CS","start_url":".","display":"standalone","background_color":"#1a1a1a","theme_color":"#1a1a1a","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/4341/4341069.png","sizes":"512x512","type":"image/png"}]}'>
 
     <style>
-        /* Reseta e previne highlights no toque */
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
-        /* Centraliza a calculadora na tela */
-        body { background: #b3b3b3; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; font-family: 'Segoe UI', Arial, sans-serif; }
         
-        /* Botão de Instalação (aparece só no Android via Chrome) */
-        #installBtn { display: none; position: absolute; top: 10px; left: 10px; background: #d68a00; color: #000; border: none; padding: 8px 15px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        body { 
+            background: #333; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 5px; 
+            overflow: hidden; /* Evita rolagem desnecessária no app */
+        }
 
-        /* Estrutura Principal da Calculadora */
-        .hp12c { background: #1a1a1a; width: 780px; padding: 40px 25px 120px 25px; border-radius: 12px; box-shadow: 0 40px 80px rgba(0,0,0,0.8); border: 3px solid #000; position: relative; }
-        .faceplate { background: linear-gradient(180deg, #e0e0e0 0%, #bbbbbb 100%); border-radius: 6px; padding: 20px 20px 45px 20px; border: 1px solid #777; }
+        /* Container Principal Responsivo */
+        .hp12c { 
+            background: #1a1a1a; 
+            width: 100%;
+            max-width: 900px; /* Limite para não esticar demais em tablets */
+            padding: 2% 2% 8% 2%; 
+            border-radius: 12px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
+            border: 2px solid #000; 
+            position: relative;
+        }
 
-        /* Área dos Visores (LCD + Pilha) */
-        .display-area { display: flex; gap: 15px; align-items: flex-end; margin-bottom: 30px; }
-        .lcd-container { background: #000; padding: 5px; border-radius: 4px; width: 320px; flex-shrink: 0; }
-        .lcd { background: #9ead94; height: 75px; padding: 10px; text-align: right; border: 2px solid #333; box-shadow: inset 0 0 15px rgba(0,0,0,0.2); }
-        #display { font-size: 38px; font-family: 'Courier New', monospace; font-weight: bold; color: #1a1d18; }
-        .indicators { font-size: 11px; color: #1a1d18; height: 12px; font-weight: bold; text-align: left; }
+        .faceplate { 
+            background: linear-gradient(180deg, #e0e0e0 0%, #bbbbbb 100%); 
+            border-radius: 6px; 
+            padding: 15px; 
+            border: 1px solid #777; 
+        }
+
+        /* Ajuste do Visor e Pilha para caber lado a lado */
+        .display-area { 
+            display: flex; 
+            gap: 10px; 
+            align-items: flex-end; 
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .lcd-container { background: #000; padding: 4px; border-radius: 4px; flex: 2; }
+        .lcd { background: #9ead94; height: 65px; padding: 8px; text-align: right; border: 2px solid #333; }
+        #display { font-size: 32px; font-family: 'Courier New', monospace; font-weight: bold; color: #1a1d18; }
+        .indicators { font-size: 10px; color: #1a1d18; height: 10px; font-weight: bold; text-align: left; }
         
-        /* Monitor da Pilha Lateral */
-        .stack-viewer { background: #222; border: 2px solid #444; border-radius: 4px; padding: 5px 8px; width: 140px; height: 75px; display: flex; flex-direction: column; justify-content: space-between; font-family: 'Courier New', monospace; font-size: 11px; color: #9ead94; margin-bottom: 5px; }
+        .stack-viewer { 
+            background: #222; border: 1px solid #444; border-radius: 4px; 
+            padding: 5px; flex: 1; height: 65px; 
+            display: flex; flex-direction: column; justify-content: space-between; 
+            font-family: 'Courier New', monospace; font-size: 10px; color: #9ead94; 
+        }
         .stack-line { display: flex; justify-content: space-between; border-bottom: 1px solid #333; }
         .reg-label { color: #d68a00; font-weight: bold; }
 
-        /* Estilos do Logo e Assinatura */
-        .logo { position: absolute; top: 35px; right: 40px; text-align: right; }
-        .logo h1 { margin: 0; font-size: 24px; font-style: italic; color: #222; line-height: 1; }
-        .model-name { display: block; font-size: 14px; color: #444; margin-top: 2px; }
-        .signature {
-            display: block;
-            font-family: 'Brush Script MT', cursive; /* Fonte cursiva para assinatura */
-            font-size: 17px; /* Tamanho ajustado para equilibrar com o 'platinum' */
-            color: #222;
-            margin-top: 4px;
+        /* Assinatura */
+        .logo { position: absolute; top: 15px; right: 25px; text-align: right; pointer-events: none; }
+        .logo h1 { margin: 0; font-size: 18px; font-style: italic; color: #222; }
+        .signature { display: block; font-family: 'Brush Script MT', cursive; font-size: 14px; color: #222; }
+
+        /* Teclado Adaptável */
+        .keypad { 
+            display: grid; 
+            grid-template-columns: repeat(10, 1fr); 
+            grid-template-rows: repeat(4, 1fr); 
+            gap: 25px 8px; /* Mais espaço vertical para os rótulos f/g */
+            margin-top: 10px;
+            aspect-ratio: 10 / 2.5; /* Mantém a proporção das teclas */
         }
 
-        /* Grid do Teclado */
-        .keypad { display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(4, 44px); gap: 35px 12px; margin-top: 10px; }
-        .btn-cell { position: relative; width: 100%; height: 100%; }
-        /* Estilo dos Botões */
-        .btn { width: 100%; height: 100%; border-radius: 4px; color: #fff; font-size: 13px; font-weight: bold; background: linear-gradient(180deg, #444 0%, #111 100%); border: none; border-bottom: 4px solid #000; cursor: pointer; position: relative; z-index: 2; transition: transform 0.05s; }
-        .btn:active { transform: translateY(2px); border-bottom: 2px solid #000; }
-        /* Cores dos Botões Especiais */
+        .btn-cell { position: relative; width: 100%; height: 40px; }
+        .btn { 
+            width: 100%; height: 100%; border-radius: 3px; color: #fff; font-size: 12px; font-weight: bold; 
+            background: linear-gradient(180deg, #444 0%, #111 100%); border: none; border-bottom: 3px solid #000; cursor: pointer; 
+        }
+        .btn:active { transform: translateY(2px); border-bottom: 1px solid #000; }
         .btn-f { background: #d68a00 !important; color: #000 !important; }
         .btn-g { background: #0099cc !important; }
         .btn-enter { grid-column: 6; grid-row: 3 / 5; height: 100% !important; background: #555 !important; }
-        /* Rótulos f (laranja) e g (azul) */
-        .lbl-f { position: absolute; top: -18px; width: 100%; text-align: center; color: #d68a00; font-size: 10px; font-weight: 800; pointer-events: none; }
-        .lbl-g { position: absolute; top: 48px; left: 0; width: 100%; text-align: center; color: #0099cc; font-size: 10px; font-weight: 800; pointer-events: none; }
+        
+        .lbl-f { position: absolute; top: -15px; width: 100%; text-align: center; color: #d68a00; font-size: 8px; font-weight: 900; }
+        .lbl-g { position: absolute; top: 42px; width: 100%; text-align: center; color: #0099cc; font-size: 8px; font-weight: 900; }
+
+        /* Botão de Instalação Mobile */
+        #installBtn { display: none; position: fixed; top: 10px; left: 10px; background: #d68a00; color: #000; border: none; padding: 10px; border-radius: 5px; font-weight: bold; z-index: 1000; }
     </style>
 </head>
 <body>
 
-<button id="installBtn" onclick="installApp()">📲 Instalar App HP 12c CS</button>
+<button id="installBtn" onclick="installApp()">📲 INSTALAR HP 12c</button>
 
 <div class="hp12c">
     <div class="faceplate">
         <div class="logo">
             <h1>hp 12c</h1>
-            <span class="model-name">platinum</span>
             <span class="signature">Cláudio Santos</span>
         </div>
         
@@ -136,60 +170,49 @@
 </div>
 
 <script>
-    // Variáveis de Estado
     let stack = [0,0,0,0], tvm = {n:0,i:0,pv:0,pmt:0,fv:0}, registers = Array(10).fill(0);
     let buffer = "", mode = null, isTyping = false, lastOpWasEnter = false;
-    let deferredPrompt; // Para o instalador PWA
+    let deferredPrompt;
 
-    const displayEl = document.getElementById('display');
-    const installBtn = document.getElementById('installBtn');
-
-    // --- Lógica do Instalador PWA (Android/Chrome) ---
     window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault(); // Impede o banner padrão chato
-        deferredPrompt = e; // Salva o evento para usar no botão
-        installBtn.style.display = 'block'; // Mostra o nosso botão personalizado
+        e.preventDefault(); deferredPrompt = e;
+        document.getElementById('installBtn').style.display = 'block';
     });
 
     async function installApp() {
         if (deferredPrompt) {
-            deferredPrompt.prompt(); // Chama o prompt nativo do sistema
+            deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') installBtn.style.display = 'none'; // Esconde se aceitou
+            if (outcome === 'accepted') document.getElementById('installBtn').style.display = 'none';
             deferredPrompt = null;
         }
     }
-    // --------------------------------------------------
 
-    // Atualiza os visores (Principal e Pilha)
+    // REGISTRO SERVICE WORKER (PARA OFFLINE)
+    if ('serviceWorker' in navigator) {
+        const sw = `const c='hp-v1';self.addEventListener('install',e=>e.waitUntil(caches.open(c).then(a=>a.add(location.href))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+        const b = new Blob([sw], {type: 'text/javascript'});
+        navigator.serviceWorker.register(URL.createObjectURL(b));
+    }
+
     function updateLCD() {
-        displayEl.innerText = isTyping ? buffer.replace('.', ',') : format(stack[0]);
+        document.getElementById('display').innerText = isTyping ? buffer.replace('.', ',') : format(stack[0]);
         document.getElementById('regX').innerText = format(stack[0]);
         document.getElementById('regY').innerText = format(stack[1]);
         document.getElementById('regZ').innerText = format(stack[2]);
         document.getElementById('regT').innerText = format(stack[3]);
         document.getElementById('ind').innerText = mode ? mode.toUpperCase() : "";
     }
-
-    // Formatador Padrão PT-BR
     function format(v) { return v.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
-    
-    // Movimentos da Pilha RPN
     function lift() { stack[3] = stack[2]; stack[2] = stack[1]; stack[1] = stack[0]; }
-    function drop() { stack[1] = stack[2]; stack[2] = stack[3]; /* T é preservado na HP real */ }
-
-    // Digitação de Números
+    function drop() { stack[1] = stack[2]; stack[2] = stack[3]; }
     function pressNum(v) {
         if (mode === 'sto' || mode === 'rcl') { handleMemory(v); return; }
         if (!isTyping) { if (!lastOpWasEnter) lift(); buffer = v === '.' ? "0." : v.toString(); isTyping = true; lastOpWasEnter = false; }
         else { if (v === '.' && buffer.includes('.')) return; buffer += v.toString(); }
         stack[0] = parseFloat(buffer); updateLCD();
     }
-
-    // Tecla ENTER (O Coração do RPN)
     function pressEnter() { if (isTyping) { stack[0] = parseFloat(buffer); isTyping = false; } lift(); buffer = ""; lastOpWasEnter = true; updateLCD(); }
-
-    // Operações Matemáticas
     function pressOp(op) {
         if (isTyping) { stack[0] = parseFloat(buffer); isTyping = false; buffer = ""; }
         let x = stack[0], y = stack[1];
@@ -203,11 +226,9 @@
         else if (op === 'xy') { stack[0]=y; stack[1]=x; }
         lastOpWasEnter = false; mode = null; updateLCD();
     }
-
-    // Motor Financeiro (TVM)
     function pressTVM(k) {
         if (isTyping) { stack[0] = parseFloat(buffer); isTyping = false; buffer = ""; }
-        if (stack[0] === 0) { // Calcular
+        if (stack[0] === 0) {
             const i=tvm.i/100, n=tvm.n, pv=tvm.pv, fv=tvm.fv, pmt=tvm.pmt;
             if (i!==0) {
                 let f = Math.pow(1+i, n);
@@ -215,16 +236,12 @@
                 else if (k==='fv') stack[0]=-pv*f-pmt*((f-1)/i);
                 else if (k==='pv') stack[0]=(-fv-pmt*((f-1)/i))/f;
             }
-        } else { tvm[k] = stack[0]; stack[0] = 0; } // Armazenar
+        } else { tvm[k] = stack[0]; stack[0] = 0; }
         updateLCD();
     }
-
-    // Memória e Modos
     function handleMemory(v) { let i=parseInt(v); if(mode==='sto') registers[i]=stack[0]; else { lift(); stack[0]=registers[i]; } mode=null; updateLCD(); }
     function setMode(m) { mode = mode === m ? null : m; updateLCD(); }
     function resetCalc() { stack.fill(0); tvm={n:0,i:0,pv:0,pmt:0,fv:0}; registers.fill(0); buffer=""; isTyping=false; mode=null; updateLCD(); }
-    
-    // Inicialização
     updateLCD();
 </script>
 </body>
